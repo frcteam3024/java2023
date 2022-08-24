@@ -44,7 +44,7 @@ public class SwerveDrive extends CommandBase {
       targetSpeeds[i] = resultantMagnitude;
       targetAngles[i] = resultantDirection;
     };
-
+ 
     Robot.driveTrain.setSpeedMotorOutputs(targetSpeeds);
     
     // wrap 0 to 360 degrees: take difference (error), make between -180 and 180
