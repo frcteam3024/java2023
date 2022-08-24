@@ -5,10 +5,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 //import com.ctre.phoenix.motorcontrol.ControlMode;
 //import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -21,6 +23,8 @@ import frc.robot.commands.TankDrive;
 
 public class DriveTrain extends SubsystemBase {
   //private TalonSRX intakeMotor = new TalonSRX(Constants.INTAKE_MOTOR_ID);
+
+  // TODO: change to FLspeedMotor
   private CANSparkMax FLmotor = new CANSparkMax(Constants.FL_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
   private CANSparkMax FRmotor = new CANSparkMax(Constants.FR_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
   private CANSparkMax BRmotor = new CANSparkMax(Constants.BR_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -35,6 +39,9 @@ public class DriveTrain extends SubsystemBase {
   private AnalogEncoder FRencoder = new AnalogEncoder(Constants.FR_ENCODER_ID);
   private AnalogEncoder BLencoder = new AnalogEncoder(Constants.BL_ENCODER_ID);
   private AnalogEncoder BRencoder = new AnalogEncoder(Constants.BR_ENCODER_ID);
+  private PIDController pid = new PIDController(Constants.kP, Constants.kI, Constants.kD);
+  // docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html
+  private double[] targetAngles;
 
   /** Creates a new DriveTrain. */
   public DriveTrain() {}
@@ -42,15 +49,32 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("FL angle", FLencoder.getAbsolutePosition());
-    SmartDashboard.putNumber("FR angle", FRencoder.getAbsolutePosition());
-    SmartDashboard.putNumber("BL angle", BLencoder.getAbsolutePosition());
-    SmartDashboard.putNumber("BR angle", BRencoder.getAbsolutePosition());
+    double[] currentAngles = getAngles();
+    SmartDashboard.putNumber("FL angle", currentAngles[0]);
+    SmartDashboard.putNumber("FR angle", currentAngles[1]);
+    SmartDashboard.putNumber("BL angle", currentAngles[2]);
+    SmartDashboard.putNumber("BR angle", currentAngles[3]);
+
+    double[] angleMotorOutputs = new double[4];
+    for(int i=0; i<4; i++) {
+      double error = currentAngles[i] - targetAngles[i];
+      // later: create bool flipped for each for shortest path algorithm
+      // wrap errors to between -180 and 180
+      angleMotorOutputs[i] = pid.calculate(error, 0);
+    }
+    setAngleMotorOutputs(angleMotorOutputs);
   }
 
   //@Override
   public void initDefaultCommand() {
     setDefaultCommand(new TankDrive());
+  }
+
+  private void setAngleMotorOutputs(double[] motorOutputs) {
+    FLangleMotor.set(ControlMode.PercentOutput, motorOutputs[0]);
+    FRangleMotor.set(ControlMode.PercentOutput, motorOutputs[1]);
+    BLangleMotor.set(ControlMode.PercentOutput, motorOutputs[2]);
+    BRangleMotor.set(ControlMode.PercentOutput, motorOutputs[3]);
   }
 
   public void setFLspeed(double speed) {
@@ -72,12 +96,21 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void setAngles(double speed) {
-    //FLmotor.set(angle);
-    //BLmotor.set(angle);
-    //FRmotor.set(angle);
-    //BRmotor.set(angle);
+    //
+    //
+    //
+    //
   }
  
+  public double[] getAngles() {
+    double[] anglesArray = {
+    FLencoder.getAbsolutePosition(),
+    FRencoder.getAbsolutePosition(),
+    BLencoder.getAbsolutePosition(),
+    BRencoder.getAbsolutePosition()
+    };
+    return anglesArray;
+  }
 
   // VECTOR ADDITION
   public static double resultantX(double mag1, double dir1, double mag2, double dir2) {
@@ -104,7 +137,7 @@ public class DriveTrain extends SubsystemBase {
   public static double resultantDirection(double mag1, double dir1, double mag2, double dir2) {
     double resultantX = resultantX(mag1, dir1, mag2, dir2);
     double resultantY = resultantY(mag1, dir1, mag2, dir2);
-    double resultantDirection = Math.atan(resultantY/resultantX);
+    double resultantDirection = Math.atan2(resultantX,resultantY);
     return resultantDirection;
   }
 }

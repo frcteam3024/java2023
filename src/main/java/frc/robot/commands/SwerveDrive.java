@@ -28,7 +28,7 @@ public class SwerveDrive extends CommandBase {
     double rotationMagnitude = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
     double translationDirection;
     if (driverXAxis != 0) {
-      translationDirection = Math.toDegrees(Math.atan(driverYAxis/driverXAxis));
+      translationDirection = Math.toDegrees(Math.atan2(driverXAxis, driverYAxis));
     } else {
       translationDirection = driverYAxis;
     }
@@ -36,22 +36,26 @@ public class SwerveDrive extends CommandBase {
 
     double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
     double driverSensitivity = 0.5 * (1-rawSlider);
-
+ 
     double FRspeed = driverSensitivity * DriveTrain.resultantMagnitude(translationMagnitude, translationDirection, rotationMagnitude, Constants.FR_RotationDirection);
     double FLspeed = driverSensitivity * DriveTrain.resultantMagnitude(translationMagnitude, translationDirection, rotationMagnitude, Constants.FL_RotationDirection);
     double BRspeed = driverSensitivity * DriveTrain.resultantMagnitude(translationMagnitude, translationDirection, rotationMagnitude, Constants.BR_RotationDirection);
     double BLspeed = driverSensitivity * DriveTrain.resultantMagnitude(translationMagnitude, translationDirection, rotationMagnitude, Constants.BL_RotationDirection);
 
-    double FRangle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.FR_RotationDirection);
-    double FLangle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.FL_RotationDirection);
-    double BRangle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.BR_RotationDirection);
-    double BLangle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.BL_RotationDirection);
+    double FRtargetAngle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.FR_RotationDirection);
+    double FLtargetAngle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.FL_RotationDirection);
+    double BRtargetAngle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.BR_RotationDirection);
+    double BLtargetAngle = DriveTrain.resultantDirection(translationMagnitude, translationDirection, rotationMagnitude, Constants.BL_RotationDirection);
 
     Robot.driveTrain.setFLspeed(FLspeed);
     Robot.driveTrain.setFRspeed(FRspeed);
     Robot.driveTrain.setBLspeed(BLspeed);
     Robot.driveTrain.setBRspeed(BRspeed);
     
+    // wrap 0 to 360 degrees: take difference (error), make between -180 and 180
+    // pass to pid.calculate
+
+    // call setAngles() from this file
   }
 
   // Called once the command ends or is interrupted.
@@ -68,4 +72,5 @@ public class SwerveDrive extends CommandBase {
   public boolean isFinished() {
     return false;
   }
+
 }

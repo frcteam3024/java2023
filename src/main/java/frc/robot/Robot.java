@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.SpinMotor;
 import frc.robot.commands.InitMotor;
+import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.TankDrive;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
   public static SpinMotor spinMotor = new SpinMotor();
   private Command initMotor;
   private Command tankDrive;
+  private Command swerveDrive;
   public static RobotContainer m_robotContainer;
   
   //private Command m_autonomousCommand;
@@ -101,6 +103,10 @@ public class Robot extends TimedRobot {
     tankDrive.schedule();
     }
     
+    swerveDrive = new SwerveDrive();
+    if (swerveDrive != null) {
+    swerveDrive.schedule();
+    }
   }
 
   /** This function is called periodically during operator control. */

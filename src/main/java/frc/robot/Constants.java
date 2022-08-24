@@ -66,4 +66,8 @@ public final class Constants {
     public static double FR_RotationDirection              = 130.4;
     public static double BL_RotationDirection              = -49.6;
     public static double BR_RotationDirection              = -130.4;
+
+    public static double kP                                = 0.01;
+    public static double kI                                = 0;
+    public static double kD                                = 0;
 }
