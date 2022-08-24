@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,22 +14,41 @@ import edu.wpi.first.wpilibj.AnalogInput;
  */
 public final class Constants {
     
+    public static final int INTAKE_MOTOR_ID                 = 8;
+
     public static final int BR_ENCODER_ID                   = 0;
     public static final int BL_ENCODER_ID                   = 1;
     public static final int FR_ENCODER_ID                   = 2;
     public static final int FL_ENCODER_ID                   = 3;
-    
-    public static final int INTAKE_MOTOR_ID                 = 8;
 
     public static final int BR_ANGLE_MOTOR_ID               = 3;
     public static final int BL_ANGLE_MOTOR_ID               = 4;
     public static final int FR_ANGLE_MOTOR_ID               = 5;
     public static final int FL_ANGLE_MOTOR_ID               = 6;
     
-    public static final int BR_MOTOR_ID                     = 11;
-    public static final int BL_MOTOR_ID                     = 12;
-    public static final int FR_MOTOR_ID                     = 13;
-    public static final int FL_MOTOR_ID                     = 14;
+    public static final int BR_SPEED_MOTOR_ID               = 11;
+    public static final int BL_SPEED_MOTOR_ID               = 12;
+    public static final int FR_SPEED_MOTOR_ID               = 13;
+    public static final int FL_SPEED_MOTOR_ID               = 14;
+
+    public static final int[] ENCODER_IDS = {
+        FL_ENCODER_ID,
+        FR_ENCODER_ID,
+        BL_ENCODER_ID,
+        BR_ENCODER_ID,
+    };
+    public static final int[] ANGLE_MOTOR_IDS = {
+        FL_ANGLE_MOTOR_ID,
+        FR_ANGLE_MOTOR_ID,
+        BL_ANGLE_MOTOR_ID,
+        BR_ANGLE_MOTOR_ID,
+    };
+    public static final int[] SPEED_MOTOR_IDS = {
+        FL_SPEED_MOTOR_ID,
+        FR_SPEED_MOTOR_ID,
+        BL_SPEED_MOTOR_ID,
+        BR_SPEED_MOTOR_ID,
+    };
 
     public static final int DRIVE_JOYSTICK_PORT             = 0;
     public static final int COPILOT_JOYSTICK_PORT           = 1;
@@ -62,12 +79,20 @@ public final class Constants {
     */
 
     // inverse tangent of frame dimensions, etc.
-    public static double FL_RotationDirection              = 49.6;
-    public static double FR_RotationDirection              = 130.4;
-    public static double BL_RotationDirection              = -49.6;
-    public static double BR_RotationDirection              = -130.4;
+    public static double FL_ROTATION_DIRECTION              = 49.6;
+    public static double FR_ROTATION_DIRECTION              = 130.4;
+    public static double BL_ROTATION_DIRECTION              = -49.6;
+    public static double BR_ROTATION_DIRECTION              = -130.4;
+
+    public static final double[] ROTATION_DIRECTIONS = {
+        FL_ROTATION_DIRECTION,
+        FR_ROTATION_DIRECTION,
+        BL_ROTATION_DIRECTION,
+        BR_ROTATION_DIRECTION
+    };
 
     public static double kP                                = 0.01;
     public static double kI                                = 0;
     public static double kD                                = 0;
+
 }
