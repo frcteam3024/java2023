@@ -5,11 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.subsystems.DriveTrain;
 
 public class SwerveDrive extends CommandBase {
+  private static final String[] angleLabels = {"FL angle", "FR angle", "BL angle", "BR angle"};
+  private static final String[] speedOutputLabels = {"FL speedOutput", "FR speedOutput", "BL speedOutput", "BR speedOutput"};
+  private static final String[] angleOutputLabels = {"FL angleOutput", "FR angleOutput", "BL angleOutput", "BR angleOutput"};
+
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,34 +25,24 @@ public class SwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double driverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
-    double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
-    double rotationMagnitude = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
-    double translationDirection = Math.toDegrees(Math.atan2(driverXAxis, driverYAxis));
-    double translationMagnitude = Math.sqrt(Math.pow(driverXAxis,2) + Math.pow(driverYAxis,2));
-    double[] translationVector = {translationMagnitude, translationDirection};
 
-    double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = 0.5 * (1-rawSlider);
- 
-    double[] targetSpeeds = new double[4];
-    double[] targetAngles = new double[4];
-    for(int i=0; i<4; i++) {
-      double rotationDirection = Constants.ROTATION_DIRECTIONS[i];
-      double[] rotationVector = {rotationMagnitude, rotationDirection};
-      double[] resultantVector = DriveTrain.resultantVector(translationVector, rotationVector); 
-      double resultantMagnitude = driverSensitivity * resultantVector[0];
-      double resultantDirection = driverSensitivity * resultantVector[1];
-      targetSpeeds[i] = resultantMagnitude;
-      targetAngles[i] = resultantDirection;
-    };
+    double[] driverInputs = Robot.driveTrain.readDriverInputs();
+    double[][] targetValues = Robot.driveTrain.calculateTargetValues(driverInputs);
+    double[] targetSpeeds = targetValues[0];
+    double[] targetAngles = targetValues[1];
 
-    Robot.driveTrain.setSpeedMotorOutputs(targetSpeeds);
+    double[] currentMotorAngles = Robot.driveTrain.getMotorAngles();
+    Robot.driveTrain.printToDash(angleLabels, currentMotorAngles);
     
+    double[] speedMotorOutputs = targetSpeeds;
+    Robot.driveTrain.printToDash(speedOutputLabels, speedMotorOutputs);
+    double[] angleMotorOutputs = Robot.driveTrain.calculateAngleMotorOutputs(currentMotorAngles, targetAngles);
+    Robot.driveTrain.printToDash(angleOutputLabels, angleMotorOutputs);
+
+    Robot.driveTrain.setAngleMotorOutputs(angleMotorOutputs);
+    Robot.driveTrain.setSpeedMotorOutputs(speedMotorOutputs);
     // wrap 0 to 360 degrees: take difference (error), make between -180 and 180
     // pass to pid.calculate
-
-    // call setAngles() from this file
   }
 
   // Called once the command ends or is interrupted.
