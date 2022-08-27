@@ -8,9 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
 public class SwerveDrive extends CommandBase {
-  private static final String[] angleLabels = {"FL angle", "FR angle", "BL angle", "BR angle"};
-  private static final String[] speedOutputLabels = {"FL speedOutput", "FR speedOutput", "BL speedOutput", "BR speedOutput"};
-  private static final String[] angleOutputLabels = {"FL angleOutput", "FR angleOutput", "BL angleOutput", "BR angleOutput"};
 
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
@@ -31,18 +28,8 @@ public class SwerveDrive extends CommandBase {
     double[] targetSpeeds = targetValues[0];
     double[] targetAngles = targetValues[1];
 
-    double[] currentMotorAngles = Robot.driveTrain.getMotorAngles();
-    Robot.driveTrain.printToDash(angleLabels, currentMotorAngles);
-    
-    double[] speedMotorOutputs = targetSpeeds;
-    Robot.driveTrain.printToDash(speedOutputLabels, speedMotorOutputs);
-    double[] angleMotorOutputs = Robot.driveTrain.calculateAngleMotorOutputs(currentMotorAngles, targetAngles);
-    Robot.driveTrain.printToDash(angleOutputLabels, angleMotorOutputs);
-
-    Robot.driveTrain.setAngleMotorOutputs(angleMotorOutputs);
-    Robot.driveTrain.setSpeedMotorOutputs(speedMotorOutputs);
-    // wrap 0 to 360 degrees: take difference (error), make between -180 and 180
-    // pass to pid.calculate
+    Robot.driveTrain.setMotorSpeeds(targetSpeeds);
+    Robot.driveTrain.setMotorAngles(targetAngles);
   }
 
   // Called once the command ends or is interrupted.

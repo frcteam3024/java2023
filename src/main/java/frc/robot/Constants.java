@@ -13,6 +13,8 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final boolean DUBUG_MODE                  = true;
     
     public static final int INTAKE_MOTOR_ID                 = 8;
 
@@ -95,4 +97,5 @@ public final class Constants {
     public static double kI                                = 0;
     public static double kD                                = 0;
 
+    public static double ANGLE_FLIP_THRESHOLD              = 120;
 }

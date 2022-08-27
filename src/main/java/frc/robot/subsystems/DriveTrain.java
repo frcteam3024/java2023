@@ -23,6 +23,9 @@ import frc.robot.commands.SwerveDrive;
 
 public class DriveTrain extends SubsystemBase {
   //private TalonSRX intakeMotor = new TalonSRX(Constants.INTAKE_MOTOR_ID);
+  private static final String[] angleLabels = {"FL angle", "FR angle", "BL angle", "BR angle"};
+  private static final String[] speedOutputLabels = {"FL speedOutput", "FR speedOutput", "BL speedOutput", "BR speedOutput"};
+  private static final String[] angleOutputLabels = {"FL angleOutput", "FR angleOutput", "BL angleOutput", "BR angleOutput"};
 
   private CANSparkMax[] speedMotors = {
     new CANSparkMax(Constants.FL_SPEED_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless),
@@ -60,6 +63,9 @@ public class DriveTrain extends SubsystemBase {
   public void initDefaultCommand() {
     setDefaultCommand(new SwerveDrive());
   }
+
+  //TODO: implement shortest path angles and flipping wheels once current code runs successfully
+
   public double[] readDriverInputs() {
     double driverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
     double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
@@ -76,6 +82,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double[][] calculateTargetValues(double[] driverInputs) {
+
     double driverXAxis = driverInputs[0];
     double driverYAxis = driverInputs[1];
     double driverTwist = driverInputs[2];
@@ -88,7 +95,6 @@ public class DriveTrain extends SubsystemBase {
 
     double[] targetSpeeds = new double[4];
     double[] targetAngles = new double[4];
-    double maxMagnitude = 0;
 
     for(int i=0; i<4; i++) {
       double rotationDirection = Constants.ROTATION_DIRECTIONS[i];
@@ -99,25 +105,35 @@ public class DriveTrain extends SubsystemBase {
 
       targetSpeeds[i] = resultantMagnitude;
       targetAngles[i] = resultantDirection;
-
-      if(resultantMagnitude > maxMagnitude) {
-        maxMagnitude = resultantMagnitude;
-      }
-
-    };
-
-    // scale speed magnitudes to within [0,1] if any are outside that range
-    if(maxMagnitude > 1){
-      for(int i=0; i<4; i++){
-        targetSpeeds[i] /= maxMagnitude;
-      }
     }
+
     double[][] targetValues = {targetSpeeds, targetAngles};
     return targetValues;
 
   }
   
-  public static double[] resultantVector(double[] vector1, double[] vector2) {
+  public void setMotorAngles(double[] targetAngles){
+    //double[] normalizedAngles = normalizeAngles(targetAngles);
+    double[] currentMotorAngles = getMotorAngles();
+    double[] angleMotorOutputs = calculateAngleMotorOutputs(currentMotorAngles, targetAngles);
+    if(Constants.DUBUG_MODE){
+      printToDash(angleLabels, currentMotorAngles);
+      printToDash(angleOutputLabels, angleMotorOutputs);
+    }
+    setAngleMotorOutputs(angleMotorOutputs);
+  }
+
+  public void setMotorSpeeds(double[] targetSpeeds){
+    double[] normalizedSpeeds = normalizeSpeeds(targetSpeeds);
+    double[] speedMotorOutputs = normalizedSpeeds;
+    if(Constants.DUBUG_MODE){
+      printToDash(speedOutputLabels, speedMotorOutputs);
+    }
+    setSpeedMotorOutputs(speedMotorOutputs);
+  }
+
+  private static double[] resultantVector(double[] vector1, double[] vector2) {
+  
     double mag1 = vector1[0];
     double dir1 = vector1[1];
     double mag2 = vector2[0];
@@ -136,9 +152,56 @@ public class DriveTrain extends SubsystemBase {
     return vector;
   }
 
-  public void printToDash(String[] labels, double[] currentMotorAngles) {
+  /**  private double[] shortestPathAngles(double[] targetAngles){
+
+    double[] shortestPathAngles = new double[4];
+    //boolean[] flippedWheels = new boolean[4];
+    double flipThreshold = Constants.ANGLE_FLIP_THRESHOLD;
+    for(int i=0; i<4; i++){
+      double normalizedAngle;
+      double angleMod = targetAngles[i] % 360;
+      if(angleMod <= flipThreshold){
+        normalizedAngle = angleMod;
+        //flippedWheels[i] = false;
+      }else if(flipThreshold < angleMod && angleMod < 360 - flipThreshold){
+        normalizedAngle = 180 - angleMod;
+        //flippedWheels[i] = true;
+      }else{
+        normalizedAngle = angleMod - 360;
+        //flippedWheels[i] = false;
+      }
+      shortestPathAngles[i] = normalizedAngle;
+    }
+    return shortestPathAngles;
+  }
+  */
+  
+  private static double[] normalizeSpeeds(double[] targetSpeeds){
+    double maxSpeed = 0;
+    for(int i=0; i<4; i++){
+      if(targetSpeeds[i] > maxSpeed) {
+        maxSpeed = targetSpeeds[i];
+      }
+
+    };
+    double[] normalizedSpeeds = new double[4];
+    // scale speed magnitudes to within [-1,1] if any are outside that range
+    for(int i=0; i<4; i++){
+      if(maxSpeed > 1){
+        normalizedSpeeds[i] = targetSpeeds[i] / maxSpeed;
+      }else{
+        normalizedSpeeds[i] = targetSpeeds[i];
+      }
+      //if(flippedWheels[i]){
+      //  normalizedSpeeds[i] *= -1;
+      //}
+    }
+    return normalizedSpeeds;
+  }
+
+  public void printToDash(String[] labels, double[] values) {
     for(int i=0; i<4; i++) {
-      SmartDashboard.putNumber(labels[i], currentMotorAngles[i]);
+      SmartDashboard.putNumber(labels[i], values[i]);
     }
   }
   
