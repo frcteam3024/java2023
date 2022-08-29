@@ -15,6 +15,13 @@ package frc.robot;
 public final class Constants {
 
     public static final boolean DUBUG_MODE                  = true;
+
+    public static final double[] SWERVE_OFFSETS = {    //temporary
+        0.111,  //FL offset
+        0.504,  //FR offset
+        0.393,  //BL offset
+        0.794,  //BR offset
+    };
     
     public static final int INTAKE_MOTOR_ID                 = 8;
 
@@ -93,7 +100,7 @@ public final class Constants {
         BR_ROTATION_DIRECTION
     };
 
-    public static double kP                                = 0.01;
+    public static double kP                                = 0.05;
     public static double kI                                = 0;
     public static double kD                                = 0;
 

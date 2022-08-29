@@ -28,7 +28,7 @@ public class SwerveDrive extends CommandBase {
     double[] targetSpeeds = targetValues[0];
     double[] targetAngles = targetValues[1];
 
-    Robot.driveTrain.setMotorSpeeds(targetSpeeds);
+    //Robot.driveTrain.setMotorSpeeds(targetSpeeds);
     Robot.driveTrain.setMotorAngles(targetAngles);
   }
 

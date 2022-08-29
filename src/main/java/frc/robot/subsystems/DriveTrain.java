@@ -23,9 +23,14 @@ import frc.robot.commands.SwerveDrive;
 
 public class DriveTrain extends SubsystemBase {
   //private TalonSRX intakeMotor = new TalonSRX(Constants.INTAKE_MOTOR_ID);
-  private static final String[] angleLabels = {"FL angle", "FR angle", "BL angle", "BR angle"};
-  private static final String[] speedOutputLabels = {"FL speedOutput", "FR speedOutput", "BL speedOutput", "BR speedOutput"};
-  private static final String[] angleOutputLabels = {"FL angleOutput", "FR angleOutput", "BL angleOutput", "BR angleOutput"};
+  private static final String[] moduleLabels = {"FL", "FR", "BL", "BR"};
+  //private static final String[] angleLabels = {"FL angle", "FR angle", "BL angle", "BR angle"};
+  //private static final String[] speedOutputLabels = {"FL speedOutput", "FR speedOutput", "BL speedOutput", "BR speedOutput"};
+  //private static final String[] angleOutputLabels = {"FL angleOutput", "FR angleOutput", "BL angleOutput", "BR angleOutput"};
+  //private static final String[] speedVectotrLabels = {"FL speed vecotr", "FR speed vecotr", "BL speed vecotr", "BR speed vecotr"};
+  //private static final String[] angleVectorLabels = {"FL angle vector", "FR angle vector", "BL angle vector", "BR angle vector"};
+  //private static final String[] resultantVecotrMagLabels = {"FL resultant magnitude", "FR resultant magnitude", "BL resultant magnitude", "BR resultant magnitude"};
+  //private static final String[] resultantVecotrDirLabels = {"FL resultant direction", "FR resultant direction", "BL resultant direction", "BR resultant direction"};
 
   private CANSparkMax[] speedMotors = {
     new CANSparkMax(Constants.FL_SPEED_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless),
@@ -71,13 +76,22 @@ public class DriveTrain extends SubsystemBase {
     double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
     double driverTwist = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
     double dirverRawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = Math.pow(0.5*(1-dirverRawSlider), 2);
+    double driverSensitivity = 0.5*(1-dirverRawSlider);
     double[] driverInputs = {
       driverXAxis,
       driverYAxis,
       driverTwist,
       driverSensitivity
     };
+    // TODO: remove magic numbers
+    for (int i=0; i<4; i++) {
+      if (Math.abs(driverInputs[i]) < 0.05) {
+        driverInputs[i] = 0;
+      }
+    }
+    if (Math.abs(driverTwist) < 0.2) {
+      driverInputs[2] = 0;
+    }
     return driverInputs;
   }
 
@@ -94,19 +108,32 @@ public class DriveTrain extends SubsystemBase {
     double[] translationVector = {translationMagnitude, translationDirection};
 
     double[] targetSpeeds = new double[4];
+    double[] offsetAdjustedAngles = new double[4];
     double[] targetAngles = new double[4];
+    double[][] resultantVectors = new double[4][2];
+    double[][] rotationVectors = new double[4][2];
 
     for(int i=0; i<4; i++) {
       double rotationDirection = Constants.ROTATION_DIRECTIONS[i];
-      double[] rotationVector = {rotationMagnitude, rotationDirection};
-      double[] resultantVector = resultantVector(translationVector, rotationVector); 
-      double resultantMagnitude = driverSensitivity * resultantVector[0];
-      double resultantDirection = resultantVector[1];
+      rotationVectors[i][0] = rotationMagnitude;
+      rotationVectors[i][1] = rotationDirection;
+      resultantVectors[i] = resultantVector(translationVector, rotationVectors[i]); 
+      double resultantMagnitude = driverSensitivity * resultantVectors[i][0];
+      double resultantDirection = resultantVectors[i][1];
 
       targetSpeeds[i] = resultantMagnitude;
+    //  offsetAdjustedAngles[i] = resultantDirection - Constants.SWERVE_OFFSETS[i];
       targetAngles[i] = resultantDirection;
     }
-
+    
+    SmartDashboard.putNumber("translation mag ", translationMagnitude);
+    SmartDashboard.putNumber("translation dir ", translationDirection);
+    for (int i=0; i<4; i++) {
+      SmartDashboard.putNumber("rotation magnitude"+moduleLabels[i], rotationVectors[i][0]);
+      SmartDashboard.putNumber("rotation direction"+moduleLabels[i], rotationVectors[i][1]);
+    }
+    
+    
     double[][] targetValues = {targetSpeeds, targetAngles};
     return targetValues;
 
@@ -117,8 +144,8 @@ public class DriveTrain extends SubsystemBase {
     double[] currentMotorAngles = getMotorAngles();
     double[] angleMotorOutputs = calculateAngleMotorOutputs(currentMotorAngles, targetAngles);
     if(Constants.DUBUG_MODE){
-      printToDash(angleLabels, currentMotorAngles);
-      printToDash(angleOutputLabels, angleMotorOutputs);
+      printArrayToDash("current angle", currentMotorAngles);
+      printArrayToDash("angle outputs", angleMotorOutputs);
     }
     setAngleMotorOutputs(angleMotorOutputs);
   }
@@ -127,7 +154,7 @@ public class DriveTrain extends SubsystemBase {
     double[] normalizedSpeeds = normalizeSpeeds(targetSpeeds);
     double[] speedMotorOutputs = normalizedSpeeds;
     if(Constants.DUBUG_MODE){
-      printToDash(speedOutputLabels, speedMotorOutputs);
+      printArrayToDash("speed outputs", speedMotorOutputs);
     }
     setSpeedMotorOutputs(speedMotorOutputs);
   }
@@ -186,12 +213,15 @@ public class DriveTrain extends SubsystemBase {
     };
     double[] normalizedSpeeds = new double[4];
     // scale speed magnitudes to within [-1,1] if any are outside that range
-    for(int i=0; i<4; i++){
-      if(maxSpeed > 1){
+    for (int i=0; i<4; i++) {
+      if (maxSpeed > 1) {
         normalizedSpeeds[i] = targetSpeeds[i] / maxSpeed;
-      }else{
+      } else {
         normalizedSpeeds[i] = targetSpeeds[i];
       }
+      //if (normalizedSpeeds[i] < 0.01) {
+      //  normalizedSpeeds[i] = 0;
+      //}
       //if(flippedWheels[i]){
       //  normalizedSpeeds[i] *= -1;
       //}
@@ -199,11 +229,19 @@ public class DriveTrain extends SubsystemBase {
     return normalizedSpeeds;
   }
 
-  public void printToDash(String[] labels, double[] values) {
+  public void printArrayToDash(String label, double[] values) {
     for(int i=0; i<4; i++) {
-      SmartDashboard.putNumber(labels[i], values[i]);
+      SmartDashboard.putNumber(label+moduleLabels[i], values[i]);
     }
   }
+  
+  public void printVectorsToDash(String label, double[][] vector) {
+    for(int i=0; i<4; i++) {
+      SmartDashboard.putNumber(label+moduleLabels[i]+"mag", vector[i][0]);
+      SmartDashboard.putNumber(label+moduleLabels[i]+"dir", vector[i][1]);
+    }
+  }
+
   
   public double[] getMotorAngles() {
     double[] motorAngles = new double[4];
@@ -220,6 +258,7 @@ public class DriveTrain extends SubsystemBase {
       // later: create bool flipped for each for shortest path algorithm
       // wrap errors to between -180 and 180
 
+      SmartDashboard.putNumber(moduleLabels[i]+" angle error", currentError);
       angleMotorOutputs[i] = pid.calculate(currentError);
     }
     return angleMotorOutputs;
@@ -236,5 +275,4 @@ public class DriveTrain extends SubsystemBase {
       speedMotors[i].set(speedMotorOutputs[i]);
     }
   }
-
 }
