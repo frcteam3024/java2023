@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -25,21 +27,21 @@ public class TankDrive extends CommandBase {
     double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
     double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
     double driverSensitivity = 0.5 * (1-rawSlider);
+    double targetSpeed = driverYAxis * driverSensitivity;
+    
+    double[] speedMotorOutputs = new double[4];
+    
+    Arrays.fill(speedMotorOutputs, targetSpeed);
 
-    Robot.driveTrain.setFLspeed(driverYAxis * driverSensitivity);
-    Robot.driveTrain.setFRspeed(driverYAxis * driverSensitivity);
-    Robot.driveTrain.setBLspeed(driverYAxis * driverSensitivity);
-    Robot.driveTrain.setBRspeed(driverYAxis * driverSensitivity);
+    Robot.driveTrain.setSpeedMotorOutputs(speedMotorOutputs);
   
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Robot.driveTrain.setFLspeed(0);
-    Robot.driveTrain.setFRspeed(0);
-    Robot.driveTrain.setBLspeed(0);
-    Robot.driveTrain.setBRspeed(0);
+    double[] zeroSpeed = {0,0,0,0};
+    Robot.driveTrain.setSpeedMotorOutputs(zeroSpeed);
   }
 
   // Returns true when the command should end.
