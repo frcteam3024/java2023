@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
@@ -17,7 +20,12 @@ public class SwerveDrive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    for (int i=0; i<4; i++) {
+      Robot.driveTrain.driveModules[i].speedMotor.setIdleMode(IdleMode.kBrake);
+      Robot.driveTrain.driveModules[i].angleMotor.setNeutralMode(NeutralMode.Brake);
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -26,13 +34,10 @@ public class SwerveDrive extends CommandBase {
     double[] driverInputs = Robot.driveTrain.readDriverInputs();
     double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
 
-    double[] targetSpeeds = new double[4];
-    double[] targetAngles = new double[4];
-    for (int i=0; i<4; i++) {
-      targetSpeeds[i] = targetVectors[i][0];
-      targetAngles[i] = targetVectors[i][1];
-    }
-    Robot.driveTrain.setMotorSpeeds(targetSpeeds);
+    double[] targetSpeeds = targetVectors[0];
+    double[] targetAngles = targetVectors[1];
+    
+    //Robot.driveTrain.setMotorSpeeds(targetSpeeds);
     Robot.driveTrain.setMotorAngles(targetAngles);
   }
 
@@ -41,6 +46,10 @@ public class SwerveDrive extends CommandBase {
   public void end(boolean interrupted) {
     double[] zeroSpeed = {0,0,0,0};
     Robot.driveTrain.setMotorSpeeds(zeroSpeed);
+    for (int i=0; i<4; i++) {
+      Robot.driveTrain.driveModules[i].speedMotor.setIdleMode(IdleMode.kCoast);
+      Robot.driveTrain.driveModules[i].angleMotor.setNeutralMode(NeutralMode.Coast);
+    }
   }
 
   // Returns true when the command should end.

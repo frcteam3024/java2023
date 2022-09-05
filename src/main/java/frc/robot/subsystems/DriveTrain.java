@@ -138,9 +138,13 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double[] getCurrentMotorAngles() {
+    // outputs in degrees
     double[] currentMotorAngles = new double[4];
     for (int i=0; i<4; i++) {
-      currentMotorAngles[i] = driveModules[i].angleEncoder.getAbsolutePosition();
+      double currentDegAngle = driveModules[i].angleEncoder.getAbsolutePosition() * 360;
+      if (currentDegAngle > 180)
+        currentDegAngle -= 360;
+      currentMotorAngles[i] = currentDegAngle;
       driveModules[i].currentAngle = currentMotorAngles[i];
     }
     return currentMotorAngles;
@@ -149,14 +153,23 @@ public class DriveTrain extends SubsystemBase {
   private double[] calculateAngleMotorOutputs(double[] currentMotorAngles, double[] targetAngles) {
     double[] angleMotorOutputs = new double[4];
     for (int i=0; i<4; i++) {
-      double currentError = currentMotorAngles[i] - targetAngles[i];
-      angleMotorOutputs[i] = pid.calculate(currentError);
+      double currentDegError = currentMotorAngles[i] - targetAngles[i];
+      currentDegError %= 360;
+      if (currentDegError > 180)
+        currentDegError -= 360;
+      double currentError = currentDegError / 360;
+      //angleMotorOutputs[i] = pid.calculate(currentError);
+      angleMotorOutputs[i] = Constants.kP * currentError;
+      Robot.displaySystem.printValueToDash(Robot.driveTrain.driveModules[i].location + " error", angleMotorOutputs[i]);
     }
     return angleMotorOutputs;
   }
 
   private void setAngleMotorOutputs(double[] angleMotorOutputs) {
     for (int i=0; i<4; i++) {
+      if (Math.abs(angleMotorOutputs[i]) < 0.05) {
+        angleMotorOutputs[i] = 0;
+      }
       driveModules[i].angleMotorOutput = angleMotorOutputs[i];
       driveModules[i].angleMotor.set(ControlMode.PercentOutput, angleMotorOutputs[i]);
     }
@@ -271,11 +284,9 @@ public class DriveTrain extends SubsystemBase {
 
   private double arrayMax(double[] array) {
     double max = 0;
-    for (int i=0; i<4; i++) {
-      if (array[i] > max) {
+    for (int i=0; i<4; i++)
+      if (array[i] > max)
         max = array[i];
-      }
-    }
     return max;
   }
 
