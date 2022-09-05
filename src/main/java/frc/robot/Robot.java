@@ -6,13 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DisplaySystem;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.SpinMotor;
-import frc.robot.commands.InitMotor;
+import frc.robot.subsystems.IntakeSystem;
+import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.commands.TankDrive;
+//import frc.robot.commands.TankDrive;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -20,10 +20,11 @@ import frc.robot.commands.TankDrive;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static DriveTrain driveTrain= new DriveTrain();
-  public static SpinMotor spinMotor = new SpinMotor();
-  private Command initMotor;
-  private Command tankDrive;
+  public static DriveTrain driveTrain = new DriveTrain();
+  public static DisplaySystem displaySystem = new DisplaySystem();
+  public static IntakeSystem intakeSystem = new IntakeSystem();
+  private Command spinIntake;
+  //private Command tankDrive;
   private Command swerveDrive;
   public static RobotContainer m_robotContainer;
   
@@ -93,15 +94,15 @@ public class Robot extends TimedRobot {
     //  m_autonomousCommand.cancel();
     //}
     
-    initMotor = new InitMotor();
-    if (initMotor != null) {
-    initMotor.schedule();
+    spinIntake = new SpinIntake();
+    if (spinIntake != null) {
+    spinIntake.schedule();
     }
 
-    tankDrive = new TankDrive();
-    if (tankDrive != null) {
-    tankDrive.schedule();
-    }
+    //tankDrive = new TankDrive();
+    //if (tankDrive != null) {
+    //tankDrive.schedule();
+    //}
     
     swerveDrive = new SwerveDrive();
     if (swerveDrive != null) {
