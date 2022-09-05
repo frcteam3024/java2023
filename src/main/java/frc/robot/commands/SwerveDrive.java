@@ -24,11 +24,15 @@ public class SwerveDrive extends CommandBase {
   public void execute() {
 
     double[] driverInputs = Robot.driveTrain.readDriverInputs();
-    double[][] targetValues = Robot.driveTrain.calculateTargetValues(driverInputs);
-    double[] targetSpeeds = targetValues[0];
-    double[] targetAngles = targetValues[1];
+    double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
 
-    //Robot.driveTrain.setMotorSpeeds(targetSpeeds);
+    double[] targetSpeeds = new double[4];
+    double[] targetAngles = new double[4];
+    for (int i=0; i<4; i++) {
+      targetSpeeds[i] = targetVectors[i][0];
+      targetAngles[i] = targetVectors[i][1];
+    }
+    Robot.driveTrain.setMotorSpeeds(targetSpeeds);
     Robot.driveTrain.setMotorAngles(targetAngles);
   }
 
@@ -36,7 +40,7 @@ public class SwerveDrive extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     double[] zeroSpeed = {0,0,0,0};
-    Robot.driveTrain.setSpeedMotorOutputs(zeroSpeed);
+    Robot.driveTrain.setMotorSpeeds(zeroSpeed);
   }
 
   // Returns true when the command should end.
