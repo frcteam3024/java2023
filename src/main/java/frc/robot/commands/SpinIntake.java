@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.Constants;
 
-public class InitMotor extends CommandBase {
+public class SpinIntake extends CommandBase {
   /** Creates a new InitMotor. */
-  public InitMotor() {
+  public SpinIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Robot.spinMotor);
+    addRequirements(Robot.intakeSystem);
   }
 
   // Called when the command is initially scheduled.
@@ -24,13 +24,13 @@ public class InitMotor extends CommandBase {
   public void execute() {
     double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
     final double motorSpeed = rawSlider * Robot.m_robotContainer.GetCopilotRawAxis(Constants.COPILOT_LEFT_STICK_Y);
-    Robot.spinMotor.setIntakeMotor(motorSpeed);
+    Robot.intakeSystem.setIntakeMotor(motorSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Robot.spinMotor.setIntakeMotor(0);
+    Robot.intakeSystem.setIntakeMotor(0);
   }
 
   // Returns true when the command should end.

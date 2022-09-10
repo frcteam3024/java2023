@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Constants;
-import frc.robot.commands.InitMotor;
+import frc.robot.commands.SpinIntake;
 
 
-public class SpinMotor extends SubsystemBase {
+public class IntakeSystem extends SubsystemBase {
   private TalonSRX intakeMotor = new TalonSRX(Constants.INTAKE_MOTOR_ID);
   /** Creates a new SpinMotor. */
-  public SpinMotor() {}
+  public IntakeSystem() {}
 
   @Override
   public void periodic() {
@@ -24,7 +24,7 @@ public class SpinMotor extends SubsystemBase {
 
   //@Override
   public void initDefaultCommand() {
-    setDefaultCommand(new InitMotor());
+    setDefaultCommand(new SpinIntake());
   }
 
 
