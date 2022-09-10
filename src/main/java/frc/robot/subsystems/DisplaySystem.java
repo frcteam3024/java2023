@@ -42,6 +42,7 @@ public class DisplaySystem extends SubsystemBase {
         SmartDashboard.putNumberArray(Robot.driveTrain.driveModules[i].location+" "+label, vectorArray[i]);
   }
 
+  /**
   public void printAnglesToDash() {
     double[] currentMotorAngles = new double[4];
     double[] angleMotorOutputs = new double[4];
@@ -60,5 +61,6 @@ public class DisplaySystem extends SubsystemBase {
       speedMotorOutputs[i] = Robot.driveTrain.driveModules[i].speedMotorOutput;
     printArrayToDash("speed output", speedMotorOutputs);
   }
+  */
 
 }
