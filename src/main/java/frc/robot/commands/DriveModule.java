@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
@@ -22,10 +23,13 @@ public class DriveModule {
     public AnalogEncoder angleEncoder;   // angle encoder
 
     public boolean flipped;          // should speed be inverted?
+    //public double swerveOffset;
 
-    public double currentAngle;      // for easy
-    public double speedMotorOutput;  // access by
-    public double angleMotorOutput;  // print functions
+    //public double currentAngle;      // for easy
+    //public double speedMotorOutput;  // access by
+    //public double angleMotorOutput;  // print functions
+
+    // TODO: getters/setters
 
     public DriveModule(String location, int index) {
         this.location = location;
@@ -37,4 +41,12 @@ public class DriveModule {
         angleEncoder = new AnalogEncoder(Constants.ENCODER_IDS[index]);
     }
 
+    public double getAngleEncoder() {
+        double rawEncoder = angleEncoder.getAbsolutePosition();
+        double degEncoder = rawEncoder * 360.0;
+        double zeroedEncoder = degEncoder - Constants.ENCODER_ZERO_OFFSETS[index];
+        double finalEncoder = Robot.driveTrain.standardizeAngle(zeroedEncoder);
+
+        return finalEncoder;
+    }
 }
