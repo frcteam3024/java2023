@@ -6,6 +6,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -53,11 +54,15 @@ public class DriveTrain extends SubsystemBase {
   ///////////////////////////////
   
   public double[] readDriverInputs() {
-    double driverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
-    double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
+    double rawDriverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
+    double rawDriverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
     double driverTwist = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
     double dirverRawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
     double driverSensitivity = adjustSliderRange(dirverRawSlider);
+    double[] fixedDriverJoyInputs = fixDriverJoystickInputs(rawDriverXAxis, rawDriverYAxis);
+    double driverXAxis = fixedDriverJoyInputs[0];
+    double driverYAxis = fixedDriverJoyInputs[1];
+
     double[] driverInputs = {
       driverXAxis,
       driverYAxis,
@@ -292,5 +297,20 @@ public class DriveTrain extends SubsystemBase {
 
   private double adjustSliderRange(double dirverRawSlider) {
     return 0.5*(1-dirverRawSlider);
+  }
+
+  private double[] fixDriverJoystickInputs(double rawDriverXAxis, double rawDriverYAxis) {
+    // https://www.desmos.com/calculator/rxa17a8nvr
+    double angle = Math.atan2(rawDriverYAxis, rawDriverXAxis);
+    double squareMagnitude;
+    if (rawDriverXAxis > rawDriverYAxis)
+      squareMagnitude = 1/Math.cos(angle);
+    else
+      squareMagnitude = 1/Math.sin(angle);
+    double finalDriverXAxis = rawDriverXAxis/squareMagnitude;
+    double finalDriverYAxis = rawDriverYAxis/squareMagnitude;
+
+    double[] fixedDriverInputs = {finalDriverXAxis, finalDriverYAxis};
+    return fixedDriverInputs;
   }
 }
