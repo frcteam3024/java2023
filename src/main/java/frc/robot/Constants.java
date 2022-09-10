@@ -16,12 +16,15 @@ public final class Constants {
 
     public static final boolean DUBUG_MODE                  = true;
 
-    // TODO: better method to reset offsets
-    public static final double[] SWERVE_OFFSETS = {    // temporary
-        0.111,  //FL offset
-        0.504,  //FR offset
-        0.393,  //BL offset
-        0.794,  //BR offset
+    public static final double FL_ENCODER_ZERO_OFFSET       = 39.2;
+    public static final double FR_ENCODER_ZERO_OFFSET       = 173.1;
+    public static final double BL_ENCODER_ZERO_OFFSET       = 137.9;
+    public static final double BR_ENCODER_ZERO_OFFSET       = -73.8;
+    public static final double[] ENCODER_ZERO_OFFSETS = {
+        FL_ENCODER_ZERO_OFFSET,
+        FR_ENCODER_ZERO_OFFSET,
+        BL_ENCODER_ZERO_OFFSET,
+        BR_ENCODER_ZERO_OFFSET
     };
     
     public static final int FL_MODULE_ID                    = 0;
@@ -81,7 +84,7 @@ public final class Constants {
     public static final double[] DRIVER_AXIS_THRESHOLDS = {
         DRIVE_X_AXIS_THRESHOLD,
         DRIVE_Y_AXIS_THRESHOLD,
-        DRIVE_ROTATE_THRESHOLD,
+        //DRIVE_ROTATE_THRESHOLD,
         DRIVE_SLIDER_THRESHOLD
     };
 
@@ -106,19 +109,19 @@ public final class Constants {
     */
 
     // inverse tangent of frame dimensions, etc.
-    public static double FL_ROTATION_DIRECTION              = 49.6;
-    public static double FR_ROTATION_DIRECTION              = -49.6;
-    public static double BL_ROTATION_DIRECTION              = -49.6;
-    public static double BR_ROTATION_DIRECTION              = 49.6;
+    //public static double FL_ROTATION_DIRECTION              = 49.6;
+    //public static double FR_ROTATION_DIRECTION              = -49.6;
+    //public static double BL_ROTATION_DIRECTION              = -49.6;
+    //public static double BR_ROTATION_DIRECTION              = 49.6;
 
-    public static final double[] ROTATION_DIRECTIONS = {
-        FL_ROTATION_DIRECTION,
-        FR_ROTATION_DIRECTION,
-        BL_ROTATION_DIRECTION,
-        BR_ROTATION_DIRECTION
-    };
+    //public static final double[] ROTATION_DIRECTIONS = {
+    //    FL_ROTATION_DIRECTION,
+    //    FR_ROTATION_DIRECTION,
+    //    BL_ROTATION_DIRECTION,
+    //    BR_ROTATION_DIRECTION
+    //};
 
-    public static double kP                                = 0.2;
+    public static double kP                                = .3;
     public static double kI                                = 0;
     public static double kD                                = 0;
 
