@@ -9,10 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DisplaySystem;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.IntakeSystem;
-import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwerveDrive;
-//import frc.robot.commands.TankDrive;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -22,26 +19,14 @@ import frc.robot.commands.SwerveDrive;
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain = new DriveTrain();
   public static DisplaySystem displaySystem = new DisplaySystem();
-  public static IntakeSystem intakeSystem = new IntakeSystem();
-  private Command spinIntake;
-  //private Command tankDrive;
   private Command swerveDrive;
-  public static RobotContainer m_robotContainer;
-  
-  //private Command m_autonomousCommand;
-
-  //private RobotContainer m_robotContainer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
-  public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-  }
+  public void robotInit() {}
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -69,15 +54,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
-    /**
-    initMotor = new InitMotor();
-    if (initMotor != null) {
-    initMotor.schedule();
-    } */
-    
 }
 
   /** This function is called periodically during autonomous. */
@@ -90,24 +67,10 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    //if (m_autonomousCommand != null) {
-    //  m_autonomousCommand.cancel();
-    //}
-    
-    spinIntake = new SpinIntake();
-    if (spinIntake != null) {
-    spinIntake.schedule();
-    }
-
-    //tankDrive = new TankDrive();
-    //if (tankDrive != null) {
-    //tankDrive.schedule();
-    //}
     
     swerveDrive = new SwerveDrive();
-    if (swerveDrive != null) {
-    swerveDrive.schedule();
-    }
+    if (swerveDrive != null)
+      swerveDrive.schedule();
   }
 
   /** This function is called periodically during operator control. */
