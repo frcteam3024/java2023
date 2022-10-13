@@ -45,8 +45,6 @@ public class DriveModule {
         double rawEncoder = angleEncoder.getAbsolutePosition();
         double degEncoder = rawEncoder * 360.0;
         double zeroedEncoder = degEncoder - Constants.ENCODER_ZERO_OFFSETS[index];
-        double finalEncoder = Robot.driveTrain.standardizeAngle(zeroedEncoder);
-
-        return finalEncoder;
+        return Robot.driveTrain.standardizeAngle(zeroedEncoder);
     }
 }

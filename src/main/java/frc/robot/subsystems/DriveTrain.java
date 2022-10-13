@@ -20,7 +20,7 @@ public class DriveTrain extends SubsystemBase {
   DriveModule BLdriveModule = new DriveModule("BL", Constants.BL_MODULE_ID);
   DriveModule BRdriveModule = new DriveModule("BR", Constants.BR_MODULE_ID);
 
-  private DriveModule[] driveModules = {
+  DriveModule[] driveModules = {
     FLdriveModule,
     FRdriveModule,
     BLdriveModule,
