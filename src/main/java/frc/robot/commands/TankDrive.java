@@ -4,44 +4,53 @@
 
 package frc.robot.commands;
 
-import java.util.Arrays;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.subsystems.DriveTrain;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
+/** An example command that uses an example subsystem. */
 public class TankDrive extends CommandBase {
-  /** Creates a new TankDrive. */
-  public TankDrive() {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final DriveTrain driveTrain;
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public TankDrive(DriveTrain subsystem) {
+    driveTrain = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Robot.driveTrain);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    driveTrain.coastMode();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
-    double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = 0.5 * (1-rawSlider);
-    double targetSpeed = driverYAxis * driverSensitivity;
+    double driverLeftAxis = Robot.robotContainer.getCopilotRawAxis(Constants.COPILOT_LEFT_AXIS);
+    double driverRightAxis = Robot.robotContainer.getCopilotRawAxis(Constants.COPILOT_RIGHT_AXIS);
+    double leftMotorOutputs = 0.5 * driverLeftAxis;
+    double rightMotorOutputs = 0.5 * driverRightAxis;
     
-    double[] speedMotorOutputs = new double[4];
-    
-    Arrays.fill(speedMotorOutputs, targetSpeed);
-
-    Robot.driveTrain.setSpeedMotorOutputs(speedMotorOutputs);
-  
+    driveTrain.setLeftMotorOutputs(leftMotorOutputs);
+    driveTrain.setRightMotorOutputs(rightMotorOutputs);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    double[] zeroSpeed = {0,0,0,0};
-    Robot.driveTrain.setSpeedMotorOutputs(zeroSpeed);
+    double zeroSpeed = 0;
+    driveTrain.setLeftMotorOutputs(zeroSpeed);
+    driveTrain.setRightMotorOutputs(zeroSpeed);
+    driveTrain.brakeMode();
   }
 
   // Returns true when the command should end.

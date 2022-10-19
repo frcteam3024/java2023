@@ -14,116 +14,14 @@ package frc.robot;
  */
 public final class Constants {
 
-    public static final boolean DUBUG_MODE                  = true;
+  private Constants() {}
 
-    public static final double FL_ENCODER_ZERO_OFFSET       = 39.2;
-    public static final double FR_ENCODER_ZERO_OFFSET       = 173.1;
-    public static final double BL_ENCODER_ZERO_OFFSET       = 137.9;
-    public static final double BR_ENCODER_ZERO_OFFSET       = -73.8;
-    public static final double[] ENCODER_ZERO_OFFSETS = {
-        FL_ENCODER_ZERO_OFFSET,
-        FR_ENCODER_ZERO_OFFSET,
-        BL_ENCODER_ZERO_OFFSET,
-        BR_ENCODER_ZERO_OFFSET
-    };
-    
-    public static final int FL_MODULE_ID                    = 0;
-    public static final int FR_MODULE_ID                    = 1;
-    public static final int BL_MODULE_ID                    = 2;
-    public static final int BR_MODULE_ID                    = 3;
+  public static final int MOTOR_LEFT_1_ID = 0;
+  public static final int MOTOR_LEFT_2_ID = 0;
+  public static final int MOTOR_RIGHT_1_ID = 0;
+  public static final int MOTOR_RIGHT_2_ID = 0;
+  public static final int COPILOT_JOYSTICK_PORT = 0;
+  public static final int COPILOT_LEFT_AXIS = 0;
+  public static final int COPILOT_RIGHT_AXIS = 0;
 
-    public static final int BR_ENCODER_ID                   = 0;
-    public static final int BL_ENCODER_ID                   = 1;
-    public static final int FR_ENCODER_ID                   = 2;
-    public static final int FL_ENCODER_ID                   = 3;
-
-    public static final int BR_ANGLE_MOTOR_ID               = 3;
-    public static final int BL_ANGLE_MOTOR_ID               = 4;
-    public static final int FR_ANGLE_MOTOR_ID               = 5;
-    public static final int FL_ANGLE_MOTOR_ID               = 6;
-    
-    public static final int BR_SPEED_MOTOR_ID               = 11;
-    public static final int BL_SPEED_MOTOR_ID               = 12;
-    public static final int FR_SPEED_MOTOR_ID               = 13;
-    public static final int FL_SPEED_MOTOR_ID               = 14;
-
-    public static final int INTAKE_MOTOR_ID                 = 8;
-
-    public static final int[] ENCODER_IDS = {
-        FL_ENCODER_ID,
-        FR_ENCODER_ID,
-        BL_ENCODER_ID,
-        BR_ENCODER_ID,
-    };
-    public static final int[] ANGLE_MOTOR_IDS = {
-        FL_ANGLE_MOTOR_ID,
-        FR_ANGLE_MOTOR_ID,
-        BL_ANGLE_MOTOR_ID,
-        BR_ANGLE_MOTOR_ID,
-    };
-    public static final int[] SPEED_MOTOR_IDS = {
-        FL_SPEED_MOTOR_ID,
-        FR_SPEED_MOTOR_ID,
-        BL_SPEED_MOTOR_ID,
-        BR_SPEED_MOTOR_ID,
-    };
-
-    public static final int DRIVE_JOYSTICK_PORT             = 0;
-    public static final int COPILOT_JOYSTICK_PORT           = 1;
-              
-    public static final int DRIVE_X_AXIS                    = 0;
-    public static final int DRIVE_Y_AXIS                    = 1;
-    public static final int DRIVE_ROTATE                    = 2;
-    public static final int DRIVE_SLIDER                    = 3;
-
-    public static final double DRIVE_X_AXIS_THRESHOLD       = 0.05;
-    public static final double DRIVE_Y_AXIS_THRESHOLD       = 0.05;
-    public static final double DRIVE_ROTATE_THRESHOLD       = 0.2;
-    public static final double DRIVE_SLIDER_THRESHOLD       = 0.05;
-
-    public static final double[] DRIVER_AXIS_THRESHOLDS = {
-        DRIVE_X_AXIS_THRESHOLD,
-        DRIVE_Y_AXIS_THRESHOLD,
-        //DRIVE_ROTATE_THRESHOLD,
-        DRIVE_SLIDER_THRESHOLD
-    };
-
-    public static final int COPILOT_LEFT_STICK_X            = 0;
-    public static final int COPILOT_LEFT_STICK_Y            = 1;
-    public static final int COPILOT_RIGHT_STICK_X           = 2;
-    public static final int COPILOT_RIGHT_STICK_Y           = 3;
-    public static final int COPILOT_X                       = 0;
-    public static final int COPILOT_A                       = 1;
-    public static final int COPILOT_B                       = 2;
-    public static final int COPILOT_Y                       = 3;
-    public static final int COPILOT_LB                      = 4;
-    public static final int COPILOT_LT                      = 6;
-    public static final int COPILOT_RT                      = 7;
-    public static final int COPILOT_START                   = 9;
-    public static final int COPILOT_LEFT_STICK_PRESS        = 10;
-    public static final int COPILOT_RIGHT_STICK_PRESS       = 11;
-    /**
-    BROKEN:
-    public static final int COPILOT_RB                      = 5;
-    public static final int COPILOT_BACK                    = 8;
-    */
-
-    // inverse tangent of frame dimensions, etc.
-    //public static double FL_ROTATION_DIRECTION              = 49.6;
-    //public static double FR_ROTATION_DIRECTION              = -49.6;
-    //public static double BL_ROTATION_DIRECTION              = -49.6;
-    //public static double BR_ROTATION_DIRECTION              = 49.6;
-
-    //public static final double[] ROTATION_DIRECTIONS = {
-    //    FL_ROTATION_DIRECTION,
-    //    FR_ROTATION_DIRECTION,
-    //    BL_ROTATION_DIRECTION,
-    //    BR_ROTATION_DIRECTION
-    //};
-
-    public static double kP                                = .3;
-    public static double kI                                = 0;
-    public static double kD                                = 0;
-
-    public static double ANGLE_FLIP_THRESHOLD              = 120;
 }
