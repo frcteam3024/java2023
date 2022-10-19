@@ -1,47 +1,52 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
-import java.util.Arrays;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.subsystems.DriveTrain;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TankDrive extends CommandBase {
-  /** Creates a new TankDrive. */
-  public TankDrive() {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Robot.driveTrain);
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final DriveTrain driveTrain;
+
+  public TankDrive(DriveTrain subsystem) {
+    driveTrain = subsystem;
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // set the motors to "coast mode"
+    driveTrain.coastMode();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
-    double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = 0.5 * (1-rawSlider);
-    double targetSpeed = driverYAxis * driverSensitivity;
-    
-    double[] speedMotorOutputs = new double[4];
-    
-    Arrays.fill(speedMotorOutputs, targetSpeed);
+    /** [TODO] use the getCopilotRawAxis method from the RobotContainer file
+        to get the inputs from the right and left copilot axes and store those
+        values in two different variables. 
 
-    Robot.driveTrain.setSpeedMotorOutputs(speedMotorOutputs);
-  
+        getCopilotRawAxis() takes an axis id as an argument. Create a constant
+        in the Constants file for now and pass that as the input.
+     */
+    double driverLeftAxis = Robot.robotContainer. // fill in the rest of the line
+    
+    /** [TODO] take the axis values and multiply them by half. Store these as
+     *  the left and right target speeds */
+    double leftTargetSpeed = // [...]
+
+    /** [TODO] use the setLeftMotors() and setRightMotors() from DriveTrain
+     *  to set the motors speed equal to the target speeds of each side */
+    // [...]
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    double[] zeroSpeed = {0,0,0,0};
-    Robot.driveTrain.setSpeedMotorOutputs(zeroSpeed);
+    // [TODO] set motor speeds to zero and set motors to brake mode 
   }
 
   // Returns true when the command should end.
