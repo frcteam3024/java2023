@@ -29,7 +29,7 @@ public class TankDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveTrain.coastMode();
+    driveTrain.brakeMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,7 +50,7 @@ public class TankDrive extends CommandBase {
     double zeroSpeed = 0;
     driveTrain.setLeftMotorOutputs(zeroSpeed);
     driveTrain.setRightMotorOutputs(zeroSpeed);
-    driveTrain.brakeMode();
+    driveTrain.coastMode();
   }
 
   // Returns true when the command should end.
