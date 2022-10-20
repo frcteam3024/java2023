@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,21 +19,22 @@ public class TankDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // set the motors to "coast mode"
-    driveTrain.coastMode();
+    // set the motors to "brake mode" when TankDrive is initialized
+    driveTrain.brakeMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     /** [TODO] use the getCopilotRawAxis method from the RobotContainer file
-        to get the inputs from the right and left copilot axes and store those
+        to get the inputs from the right and left copilot axes. Store those
         values in two different variables. 
 
         getCopilotRawAxis() takes an axis id as an argument. Create a constant
         in the Constants file for now and pass that as the input.
      */
-    double driverLeftAxis = Robot.robotContainer. // fill in the rest of the line
+    double driverLeftAxis = Robot.robotContainer. // [...] fill in the rest of the line
+    double driverRightAxis = 
     
     /** [TODO] take the axis values and multiply them by half. Store these as
      *  the left and right target speeds */
@@ -46,7 +48,7 @@ public class TankDrive extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // [TODO] set motor speeds to zero and set motors to brake mode 
+    // [TODO] set motor speeds to zero and set motors to coast mode 
   }
 
   // Returns true when the command should end.
