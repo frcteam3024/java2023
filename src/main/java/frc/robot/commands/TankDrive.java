@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -42,7 +41,7 @@ public class TankDrive extends CommandBase {
 
     /** [TODO] use the setLeftMotors() and setRightMotors() from DriveTrain
      *  to set the motors speed equal to the target speeds of each side */
-    // [...]
+    drivetrain.  // [...]
   }
 
   // Called once the command ends or is interrupted.

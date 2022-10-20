@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
      */
 
     robotContainer = new RobotContainer();
-    // [TODO] initialize driveTrain in a similar fashion
+    // [TODO] initialize driveTrain as an instance of DriveTrain in a similar fashion
   }
 
   @Override
@@ -60,9 +60,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    /** [TODO] initialize a new Command called tankDrive as a new instance of TankDrive
-     *  and schedule it with the .schedule() method. This final step is what takes all
-     *  the code you've written and makes it actually run. */
+    /** [TODO] initialize a new Command called tankDrive as a new instance of TankDrive.
+     *  it will require a subsystem as an argument, so pass in driveTrain that we defined above
+     *  Finally, schedule tankDrive with the .schedule() method. This step is what takes all
+     *  the code you've written and actually runs it on the robot */
 
   }
 
