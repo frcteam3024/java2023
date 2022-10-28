@@ -59,8 +59,8 @@ public class DriveTrain extends SubsystemBase {
     double rawDriverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
     double rawDriverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
     //double driverTwist = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
-    double dirverRawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = adjustSliderRange(dirverRawSlider);
+    double driverRawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
+    double driverSensitivity = adjustSliderRange(driverRawSlider);
     double[] fixedDriverJoyInputs = fixDriverJoystickInputs(rawDriverXAxis, rawDriverYAxis);
     double driverXAxis = fixedDriverJoyInputs[0];
     double driverYAxis = fixedDriverJoyInputs[1];
