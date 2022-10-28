@@ -26,11 +26,12 @@ public class SwerveDrive extends CommandBase {
   @Override
   public void execute() {
 
-    double[] driverInputs = Robot.driveTrain.readDriverInputs();
-    double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
+    // double[] driverInputs = Robot.driveTrain.readDriverInputs();
+    // double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
 
-    double[] targetSpeeds = targetVectors[0];
-    double[] targetAngles = targetVectors[1];
+    // double[] targetSpeeds = targetVectors[0];
+    double[] targetAngles = {90,90,90,90};
+    // double[] targetAngles = targetVectors[1];
     
     //Robot.driveTrain.setMotorSpeeds(targetSpeeds);
     Robot.driveTrain.setMotorAngles(targetAngles);

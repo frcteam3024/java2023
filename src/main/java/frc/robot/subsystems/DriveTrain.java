@@ -185,7 +185,7 @@ public class DriveTrain extends SubsystemBase {
     for (int i=0; i<4; i++) {
       double currentDegError =  targetAngles[i] - currentMotorAngles[i];
       double standardizedDegError = standardizeAngle(currentDegError);
-      double finalError = standardizedDegError / 360.0;
+      double finalError = standardizedDegError / 180.0;
       //angleMotorOutputs[i] = pid.calculate(currentError);
       angleMotorOutputs[i] = Constants.kP * finalError;
       Robot.displaySystem.printValueToDash(Robot.driveTrain.driveModules[i].location + " error", standardizedDegError);
@@ -197,7 +197,7 @@ public class DriveTrain extends SubsystemBase {
 
   private void setAngleMotorOutputs(double[] angleMotorOutputs) {
     for (int i=0; i<4; i++) {
-      if (Math.abs(angleMotorOutputs[i]) < 0.05) {
+      if (Math.abs(angleMotorOutputs[i]) < 0.00) {
         angleMotorOutputs[i] = 0.0;
       }
       //driveModules[i].angleMotorOutput = angleMotorOutputs[i];

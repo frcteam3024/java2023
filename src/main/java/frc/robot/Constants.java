@@ -37,10 +37,10 @@ public final class Constants {
     public static final int FR_ENCODER_ID                   = 2;
     public static final int FL_ENCODER_ID                   = 3;
 
-    public static final int BR_ANGLE_MOTOR_ID               = 3;
-    public static final int BL_ANGLE_MOTOR_ID               = 4;
-    public static final int FR_ANGLE_MOTOR_ID               = 5;
-    public static final int FL_ANGLE_MOTOR_ID               = 6;
+    public static final int BR_ANGLE_MOTOR_ID               = 4;
+    public static final int BL_ANGLE_MOTOR_ID               = 5;
+    public static final int FR_ANGLE_MOTOR_ID               = 6;
+    public static final int FL_ANGLE_MOTOR_ID               = 7;
     
     public static final int BR_SPEED_MOTOR_ID               = 11;
     public static final int BL_SPEED_MOTOR_ID               = 12;
@@ -121,7 +121,7 @@ public final class Constants {
     //    BR_ROTATION_DIRECTION
     //};
 
-    public static double kP                                = .3;
+    public static double kP                                = .15;
     public static double kI                                = 0;
     public static double kD                                = 0;
 
