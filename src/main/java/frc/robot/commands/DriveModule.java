@@ -22,19 +22,11 @@ public class DriveModule {
     public TalonSRX angleMotor;          // motors and
     public AnalogEncoder angleEncoder;   // angle encoder
 
-    public boolean flipped;          // should speed be inverted?
-    //public double swerveOffset;
-
-    //public double currentAngle;      // for easy
-    //public double speedMotorOutput;  // access by
-    //public double angleMotorOutput;  // print functions
-
     // TODO: getters/setters
 
     public DriveModule(String location, int index) {
         this.location = location;
         this.index = index;
-        flipped = false;
 
         speedMotor = new CANSparkMax(Constants.SPEED_MOTOR_IDS[index], CANSparkMaxLowLevel.MotorType.kBrushless);
         angleMotor = new TalonSRX(Constants.ANGLE_MOTOR_IDS[index]);

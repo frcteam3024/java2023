@@ -72,10 +72,8 @@ public class DriveTrain extends SubsystemBase {
   public double[] getCurrentMotorAngles() {
     // outputs in degrees
     double[] currentMotorAngles = new double[4];
-    for (int i=0; i<4; i++) {
+    for (int i=0; i<4; i++)
       currentMotorAngles[i] = driveModules[i].getAngleEncoder();
-      //driveModules[i].currentAngle = currentMotorAngles[i];
-    }
     return currentMotorAngles;
   }
 
@@ -96,9 +94,8 @@ public class DriveTrain extends SubsystemBase {
 
   private void setAngleMotorOutputs(double[] angleMotorOutputs) {
     for (int i=0; i<4; i++) {
-      if (Math.abs(angleMotorOutputs[i]) < 0.05) {
+      if (Math.abs(angleMotorOutputs[i]) < 0.05)
         angleMotorOutputs[i] = 0.0;
-      }
       //driveModules[i].angleMotorOutput = angleMotorOutputs[i];
       driveModules[i].angleMotor.set(ControlMode.PercentOutput, angleMotorOutputs[i]);
     }
