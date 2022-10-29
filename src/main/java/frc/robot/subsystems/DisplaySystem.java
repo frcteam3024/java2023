@@ -10,8 +10,10 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class DisplaySystem extends SubsystemBase {
-  /** Creates a new DisplaySystem. */
-  public DisplaySystem() {}
+  
+  public DisplaySystem() {
+    /** Creates a new DisplaySystem. */
+  }
 
   @Override
   public void periodic() {
@@ -27,8 +29,9 @@ public class DisplaySystem extends SubsystemBase {
     //if (Constants.DUBUG_MODE) {
     //  SmartDashboard.putNumberArray(label, valueArray);
     //}
-    for (int i=0; i<4; i++)
-      printValueToDash(Robot.driveTrain.driveModules[i].location+label, valueArray[i]);
+    for (int i=0; i<4; i++) {
+      // printValueToDash(Robot.driveTrain.swerveModules[i].getLocation()+label, valueArray[i]);
+    }
   }
   
   public void printVectorToDash(String label, double[] vector) {
@@ -38,8 +41,9 @@ public class DisplaySystem extends SubsystemBase {
 
   public void printVectorsToDash(String label, double[][] vectorArray) {
     if (Constants.DUBUG_MODE)
-      for (int i=0; i<vectorArray.length; i++)
-        SmartDashboard.putNumberArray(Robot.driveTrain.driveModules[i].location+" "+label, vectorArray[i]);
+      for (int i=0; i<vectorArray.length; i++) {
+        // SmartDashboard.putNumberArray(Robot.driveTrain.swerveModules[i].getLocation()+" "+label, vectorArray[i]);
+      }
   }
 
   /**
@@ -47,9 +51,9 @@ public class DisplaySystem extends SubsystemBase {
     double[] currentMotorAngles = new double[4];
     double[] angleMotorOutputs = new double[4];
     for (int i=0; i<4; i++) {
-      currentMotorAngles[i] = Robot.driveTrain.driveModules[i].currentAngle;
-      angleMotorOutputs[i] = Robot.driveTrain.driveModules[i].angleMotorOutput;
-      String currentModule = Robot.driveTrain.driveModules[i].location;
+      currentMotorAngles[i] = Robot.driveTrain.swerveModules[i].currentAngle;
+      angleMotorOutputs[i] = Robot.driveTrain.swerveModules[i].angleMotorOutput;
+      String currentModule = Robot.driveTrain.swerveModules[i].location;
       printValueToDash(currentModule+" current angle", currentMotorAngles[i]);
       printValueToDash(currentModule+" angle output", angleMotorOutputs[i]);  
     }
@@ -58,7 +62,7 @@ public class DisplaySystem extends SubsystemBase {
   public void printSpeedsToDash() {
     double[] speedMotorOutputs = new double[4];
     for (int i=0; i<4; i++)
-      speedMotorOutputs[i] = Robot.driveTrain.driveModules[i].speedMotorOutput;
+      speedMotorOutputs[i] = Robot.driveTrain.swerveModules[i].speedMotorOutput;
     printArrayToDash("speed output", speedMotorOutputs);
   }
   */

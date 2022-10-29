@@ -18,22 +18,20 @@ public class SwerveDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Robot.driveTrain.brakeMode();
-    //Robot.driveTrain.resetSwerveOffsets();
+    Robot.driveTrain.setMotorMode("brake");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    // double[] driverInputs = Robot.driveTrain.readDriverInputs();
-    // double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
+    double[] driverInputs = Robot.driveTrain.readDriverInputs();
+    double[][] targetVectors = Robot.driveTrain.calculateTargetVectors(driverInputs);
 
-    // double[] targetSpeeds = targetVectors[0];
-    double[] targetAngles = {90,90,90,90};
-    // double[] targetAngles = targetVectors[1];
+    double[] targetSpeeds = targetVectors[0];
+    double[] targetAngles = targetVectors[1];
     
-    //Robot.driveTrain.setMotorSpeeds(targetSpeeds);
+    Robot.driveTrain.setMotorSpeeds(targetSpeeds);
     Robot.driveTrain.setMotorAngles(targetAngles);
   }
 
@@ -42,7 +40,7 @@ public class SwerveDrive extends CommandBase {
   public void end(boolean interrupted) {
     double[] zeroSpeed = {0,0,0,0};
     Robot.driveTrain.setMotorSpeeds(zeroSpeed);
-    Robot.driveTrain.coastMode();
+    Robot.driveTrain.setMotorMode("coast");
   }
 
   // Returns true when the command should end.

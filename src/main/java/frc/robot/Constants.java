@@ -27,10 +27,10 @@ public final class Constants {
         BR_ENCODER_ZERO_OFFSET
     };
     
-    public static final int FL_MODULE_ID                    = 0;
-    public static final int FR_MODULE_ID                    = 1;
-    public static final int BL_MODULE_ID                    = 2;
-    public static final int BR_MODULE_ID                    = 3;
+    public static final int FL_SWERVE_MODULE_ID             = 0;
+    public static final int FR_SWERVE_MODULE_ID             = 1;
+    public static final int BL_SWERVE_MODULE_ID             = 2;
+    public static final int BR_SWERVE_MODULE_ID             = 3;
 
     public static final int BR_ENCODER_ID                   = 0;
     public static final int BL_ENCODER_ID                   = 1;
@@ -42,12 +42,12 @@ public final class Constants {
     public static final int FR_ANGLE_MOTOR_ID               = 6;
     public static final int FL_ANGLE_MOTOR_ID               = 7;
     
+    public static final int INTAKE_MOTOR_ID                 = 8;
+
     public static final int BR_SPEED_MOTOR_ID               = 11;
     public static final int BL_SPEED_MOTOR_ID               = 12;
     public static final int FR_SPEED_MOTOR_ID               = 13;
     public static final int FL_SPEED_MOTOR_ID               = 14;
-
-    public static final int INTAKE_MOTOR_ID                 = 8;
 
     public static final int[] ENCODER_IDS = {
         FL_ENCODER_ID,

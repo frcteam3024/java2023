@@ -24,8 +24,8 @@ public class TankDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double driverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
-    double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
+    double driverYAxis = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_Y_AXIS);
+    double rawSlider = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_SLIDER);
     double driverSensitivity = 0.5 * (1-rawSlider);
     double targetSpeed = driverYAxis * driverSensitivity;
     

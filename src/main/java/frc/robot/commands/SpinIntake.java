@@ -22,8 +22,8 @@ public class SpinIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    final double motorSpeed = rawSlider * Robot.m_robotContainer.GetCopilotRawAxis(Constants.COPILOT_LEFT_STICK_Y);
+    double rawSlider = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_SLIDER);
+    final double motorSpeed = rawSlider * Robot.robotContainer.getCopilotRawAxis(Constants.COPILOT_LEFT_STICK_Y);
     Robot.intakeSystem.setIntakeMotor(motorSpeed);
   }
 

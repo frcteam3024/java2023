@@ -5,38 +5,35 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMax.IdleMode;
+import java.security.InvalidParameterException;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.commands.DriveModule;
 import frc.robot.commands.SwerveDrive;
 
 
 public class DriveTrain extends SubsystemBase {
-  //private TalonSRX intakeMotor = new TalonSRX(Constants.INTAKE_MOTOR_ID);
 
-  DriveModule FLdriveModule = new DriveModule("FL", Constants.FL_MODULE_ID);
-  DriveModule FRdriveModule = new DriveModule("FR", Constants.FR_MODULE_ID);
-  DriveModule BLdriveModule = new DriveModule("BL", Constants.BL_MODULE_ID);
-  DriveModule BRdriveModule = new DriveModule("BR", Constants.BR_MODULE_ID);
+  SwerveModule swerveFL = new SwerveModule("FL", Constants.FL_SWERVE_MODULE_ID);
+  SwerveModule swerveFR = new SwerveModule("FR", Constants.FR_SWERVE_MODULE_ID);
+  SwerveModule swerveBL = new SwerveModule("BL", Constants.BL_SWERVE_MODULE_ID);
+  SwerveModule swerveBR = new SwerveModule("BR", Constants.BR_SWERVE_MODULE_ID);
 
-  public DriveModule[] driveModules = {
-    FLdriveModule,
-    FRdriveModule,
-    BLdriveModule,
-    BRdriveModule
+  private SwerveModule[] swerveModules = {
+    swerveFL,
+    swerveFR,
+    swerveBL,
+    swerveBR
   };
 
   private PIDController pid = new PIDController(Constants.kP, Constants.kI, Constants.kD);
   // docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html
 
-  /** Creates a new DriveTrain. */
-  public DriveTrain() {}
+  public DriveTrain() {
+    /** Creates a new DriveTrain. */
+  }
 
   @Override
   public void periodic() {
@@ -49,18 +46,17 @@ public class DriveTrain extends SubsystemBase {
   }
 
   // TODO: implement shortest path angles and flipping wheels once current code runs successfully
-  // TODO: remove commented blocks once code works
 
   ///////////////////////////////
   // SPEED && ANGLE FUNCTIONS: //
   ///////////////////////////////
   
   public double[] readDriverInputs() {
-    double rawDriverXAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_X_AXIS);
-    double rawDriverYAxis = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_Y_AXIS);
-    //double driverTwist = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_ROTATE);
-    double dirverRawSlider = Robot.m_robotContainer.GetDriverRawAxis(Constants.DRIVE_SLIDER);
-    double driverSensitivity = adjustSliderRange(dirverRawSlider);
+    double rawDriverXAxis = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_X_AXIS);
+    double rawDriverYAxis = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_Y_AXIS);
+    //double driverTwist = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_ROTATE);
+    double driverRawSlider = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_SLIDER);
+    double driverSensitivity = adjustSliderRange(driverRawSlider);
     double[] fixedDriverJoyInputs = fixDriverJoystickInputs(rawDriverXAxis, rawDriverYAxis);
     double driverXAxis = fixedDriverJoyInputs[0];
     double driverYAxis = fixedDriverJoyInputs[1];
@@ -97,7 +93,6 @@ public class DriveTrain extends SubsystemBase {
     double[][] resultantVectors = new double[4][2];
     double[] resultantSpeeds = new double[4];
     double[] resultantAngles = new double[4];
-    double[] targetSpeeds = new double[4];
     double[] targetAngles = new double[4];
 
     for (int i=0; i<4; i++) {
@@ -113,9 +108,9 @@ public class DriveTrain extends SubsystemBase {
       resultantAngles[i] = resultantDirection;
 
       targetAngles[i] = resultantAngles[i];
-      //driveModules[i].targetAngle = resultantDirection;
+      //swerveModules[i].targetAngle = resultantDirection;
     }
-    targetSpeeds = normalizeSpeeds(resultantSpeeds);
+    double[] targetSpeeds = normalizeSpeeds(resultantSpeeds);
     
     Robot.displaySystem.printValueToDash("translation mag ", translationMagnitude);
     Robot.displaySystem.printValueToDash("translation dir ", translationDirection);
@@ -125,46 +120,25 @@ public class DriveTrain extends SubsystemBase {
     return targetVectors;
   }
 
-  public void coastMode() {
+  public void setMotorMode(String motorMode) {
     for (int i=0; i<4; i++) {
-      Robot.driveTrain.driveModules[i].speedMotor.setIdleMode(IdleMode.kCoast);
-      Robot.driveTrain.driveModules[i].angleMotor.setNeutralMode(NeutralMode.Coast);
+      if (motorMode.equals("brake"))
+        Robot.driveTrain.swerveModules[i].brakeMode();
+      else if (motorMode.equals("coast"))
+        Robot.driveTrain.swerveModules[i].coastMode();
+      else throw new InvalidParameterException("invalid motor mode \"" + motorMode +
+        " \"motors can only be set to brake or coast mode");
     }
   }
 
-  public void brakeMode() {
-    for (int i=0; i<4; i++) {
-      Robot.driveTrain.driveModules[i].speedMotor.setIdleMode(IdleMode.kBrake);
-      Robot.driveTrain.driveModules[i].angleMotor.setNeutralMode(NeutralMode.Brake);
-    }
-  }
-
-  /**
-   * public void resetSwerveOffsets() {
-   *   for (int i=0; i<4; i++) {
-   *     double currentAngle = driveModules[i].angleEncoder.getAbsolutePosition();
-   *     driveModules[i].swerveOffset = currentAngle;
-   *   }
-   * }
-   */
   ///////////////////////////////
   // ANGLE-SPECIFIC FUNCTIONS: //
   ///////////////////////////////
 
-  /**
-   * public void setTargetAngles(double[] targetAngles) {
-   *   //double[] normalizedAngles = normalizeAngles(targetAngles);
-   *   for (int i=0; i<4; i++)
-   *     driveModules[i].targetAngle = targetAngles[i];
-   * }
-   */
-  
   public void setMotorAngles(double[] targetAngles) {
-    //double[] normalizedAngles = normalizeAngles(targetAngles);
     double[] currentMotorAngles = getCurrentMotorAngles();
     double[] angleMotorOutputs = calculateAngleMotorOutputs(currentMotorAngles, targetAngles);
     setAngleMotorOutputs(angleMotorOutputs);
-    //Robot.displaySystem.printAnglesToDash();
     Robot.displaySystem.printArrayToDash(" taget angle", targetAngles);
     Robot.displaySystem.printArrayToDash(" current angle", currentMotorAngles);
     Robot.displaySystem.printArrayToDash(" angle output", angleMotorOutputs);
@@ -173,10 +147,8 @@ public class DriveTrain extends SubsystemBase {
   public double[] getCurrentMotorAngles() {
     // outputs in degrees
     double[] currentMotorAngles = new double[4];
-    for (int i=0; i<4; i++) {
-      currentMotorAngles[i] = driveModules[i].getAngleEncoder();
-      //driveModules[i].currentAngle = currentMotorAngles[i];
-    }
+    for (int i=0; i<4; i++)
+      currentMotorAngles[i] = swerveModules[i].getAngleEncoder();
     return currentMotorAngles;
   }
 
@@ -186,22 +158,20 @@ public class DriveTrain extends SubsystemBase {
       double currentDegError =  targetAngles[i] - currentMotorAngles[i];
       double standardizedDegError = standardizeAngle(currentDegError);
       double finalError = standardizedDegError / 180.0;
-      //angleMotorOutputs[i] = pid.calculate(currentError);
-      angleMotorOutputs[i] = Constants.kP * finalError;
-      Robot.displaySystem.printValueToDash(Robot.driveTrain.driveModules[i].location + " error", standardizedDegError);
-      Robot.displaySystem.printValueToDash(Robot.driveTrain.driveModules[i].location + " before kP", finalError);
-      Robot.displaySystem.printValueToDash(Robot.driveTrain.driveModules[i].location + " after kP", angleMotorOutputs[i]);
+      angleMotorOutputs[i] = pid.calculate(finalError);
+      // angleMotorOutputs[i] = Constants.kP * finalError;
+      Robot.displaySystem.printValueToDash(Robot.driveTrain.swerveModules[i].getLocation() + " error", standardizedDegError);
+      Robot.displaySystem.printValueToDash(Robot.driveTrain.swerveModules[i].getLocation() + " before kP", finalError);
+      Robot.displaySystem.printValueToDash(Robot.driveTrain.swerveModules[i].getLocation() + " after kP", angleMotorOutputs[i]);
     }
     return angleMotorOutputs;
   }
 
   private void setAngleMotorOutputs(double[] angleMotorOutputs) {
     for (int i=0; i<4; i++) {
-      if (Math.abs(angleMotorOutputs[i]) < 0.00) {
+      if (Math.abs(angleMotorOutputs[i]) < 0.00)
         angleMotorOutputs[i] = 0.0;
-      }
-      //driveModules[i].angleMotorOutput = angleMotorOutputs[i];
-      driveModules[i].angleMotor.set(ControlMode.PercentOutput, angleMotorOutputs[i]);
+      swerveModules[i].setAngleMotorOutput(angleMotorOutputs[i]);
     }
   }
 
@@ -215,13 +185,13 @@ public class DriveTrain extends SubsystemBase {
    *     double angleMod = targetAngles[i] % 360;
    *     if (angleMod <= flipThreshold) {
    *       normalizedAngle = angleMod;
-   *       //driveModules[i].flipped = false;
+   *       //swerveModules[i].flipped = false;
    *     }else if (flipThreshold < angleMod && angleMod < 360 - flipThreshold) {
    *       normalizedAngle = 180 - angleMod;
-   *       //driveModules[i].flipped = true;
+   *       //swerveModules[i].flipped = true;
    *     }else{
    *       normalizedAngle = angleMod - 360;
-   *       //driveModules[i].flipped = false;
+   *       //swerveModules[i].flipped = false;
    *     }
    *     shortestPathAngles[i] = normalizedAngle;
    *   }
@@ -232,23 +202,19 @@ public class DriveTrain extends SubsystemBase {
    public double standardizeAngle(double angle) {
     return ((angle + 180.0) % 360.0) - 180.0;
    }
+
+  public void resetSwerveOffsets() {
+    for ( SwerveModule module : swerveModules )
+      module.resetOffsets();
+  }
   
   ///////////////////////////////
   // SPEED-SPECIFIC FUNCTIONS: //
   ///////////////////////////////
 
-  /**
-   * public void setTargetSpeeds(double[] targetSpeeds) {
-   *   //double[] normalizedAngles = normalizeAngles(targetAngles);
-   *   for (int i=0; i<4; i++)
-   *     driveModules[i].targetSpeed = targetSpeeds[i];
-   * }
-   */
-
   public void setMotorSpeeds(double[] targetSpeeds) {
     double[] speedMotorOutputs = targetSpeeds;
     setSpeedMotorOutputs(speedMotorOutputs);
-    //Robot.displaySystem.printSpeedsToDash();
   }
 
   private double[] normalizeSpeeds(double[] inputSpeeds) {
@@ -256,11 +222,10 @@ public class DriveTrain extends SubsystemBase {
     double maxSpeed = arrayMax(inputSpeeds);
     double speedScalar;
 
-    if (maxSpeed > 1) {
+    if (maxSpeed > 1)
       speedScalar = maxSpeed;
-    } else {
+    else
       speedScalar = 1;
-    }
 
     double[] normalizedSpeeds = new double[4];
     for (int i=0; i<4; i++) {
@@ -277,19 +242,9 @@ public class DriveTrain extends SubsystemBase {
     return normalizedSpeeds;
   }
 
-  /**
-   * public void queueModuleSpeedOutputs(double[] speedMotorOutputs) {
-   *   for (int i=0; i<4; i++) {
-   *     driveModules[i].speedMotorOutput = speedMotorOutputs[i];
-   *   }
-   * }
-   */
-
   public void setSpeedMotorOutputs(double[] speedMotorOutputs) {
-    for (int i=0; i<4; i++) {
-      //driveModules[i].speedMotorOutput = speedMotorOutputs[i];
-      driveModules[i].speedMotor.set(speedMotorOutputs[i]);
-    }
+    for (int i=0; i<4; i++)
+      swerveModules[i].setSpeedMotorOutput(speedMotorOutputs[i]);
   }
 
   //////////////////////
@@ -324,15 +279,14 @@ public class DriveTrain extends SubsystemBase {
     return max;
   }
 
-  private double adjustSliderRange(double dirverRawSlider) {
-    return 0.5*(1-dirverRawSlider);
+  private double adjustSliderRange(double driverRawSlider) {
+    return 0.5*(1-driverRawSlider);
   }
 
   private double[] fixDriverJoystickInputs(double rawDriverXAxis, double rawDriverYAxis) {
     // https://www.desmos.com/calculator/rxa17a8nvr
     rawDriverYAxis *= -1;
     double radAngle = Math.atan2(rawDriverXAxis, rawDriverYAxis);
-    double degAngle = radAngle * 180.0/Math.PI;
     double squareMagnitude = Math.min(Math.abs(1/Math.cos(radAngle)),Math.abs(1/Math.sin(radAngle)));
     double finalDriverXAxis = rawDriverXAxis/squareMagnitude;
     double finalDriverYAxis = rawDriverYAxis/squareMagnitude;
