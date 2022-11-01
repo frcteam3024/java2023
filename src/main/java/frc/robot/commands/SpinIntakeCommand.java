@@ -5,32 +5,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
-import frc.robot.Constants;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class SpinIntake extends CommandBase {
-  /** Creates a new InitMotor. */
-  public SpinIntake() {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Robot.intakeSystem);
+public class SpinIntakeCommand extends CommandBase {
+  private IntakeSubsystem intakeSubsystem;
+
+  /** Creates a new SpinIntake. */
+  public SpinIntakeCommand(IntakeSubsystem intakeSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    intakeSubsystem.brakeMode();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rawSlider = Robot.robotContainer.getDriverRawAxis(Constants.DRIVE_SLIDER);
-    final double motorSpeed = rawSlider * Robot.robotContainer.getCopilotRawAxis(Constants.COPILOT_LEFT_STICK_Y);
-    Robot.intakeSystem.setIntakeMotor(motorSpeed);
+    intakeSubsystem.spinIntakeMotor();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Robot.intakeSystem.setIntakeMotor(0);
+    intakeSubsystem.stopIntakeMotor();
+    intakeSubsystem.coastMode();
   }
 
   // Returns true when the command should end.

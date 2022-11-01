@@ -4,7 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.SpinIntakeCommand;
+import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import static frc.robot.Constants.OIConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -14,33 +23,23 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class RobotContainer {
 
-  private Joystick driverController  = new Joystick(Constants.DRIVE_JOYSTICK_PORT);
-  private Joystick copilotController = new Joystick(Constants.COPILOT_JOYSTICK_PORT);
-
-  public double getDriverRawAxis(int axis) {
-    return driverController.getRawAxis(axis);
-  }
-
-  public boolean getDriverRawButton(int button) {
-    return driverController.getRawButton(button);
-  }
-
-  public double getCopilotRawAxis(int axis) {
-    return copilotController.getRawAxis(axis);
-  }
-
-  public boolean getCopilotRawButton(int button) {
-    return copilotController.getRawButton(button);
-  }
-
+  private static final int SPIN_INTAKE_BUTTON = 0;
+  private static final int RESET_GYRO_BUTTON = 0;
   // The robot's subsystems and commands are defined here...
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
-  //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final Joystick driverController  = new Joystick(DRIVE_JOYSTICK_PORT);
+  private final Joystick copilotController = new Joystick(COPILOT_JOYSTICK_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the button bindings
+    swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
+        swerveSubsystem,
+        driverController::getMagnitude,
+        driverController::getDirectionRadians,
+        driverController::getTwist,
+        () -> !driverController.getRawButton(FIELD_ORIENTED_TOGGLE_BUTTON)));
     configureButtonBindings();
   }
 
@@ -50,15 +49,16 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    new JoystickButton(driverController, RESET_GYRO_BUTTON)
+        .whenPressed(swerveSubsystem::zeroHeading);
+    new JoystickButton(copilotController, SPIN_INTAKE_BUTTON)
+        .whileHeld(new SpinIntakeCommand(intakeSubsystem));
+    
+  }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  //public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    //return m_autoCommand;
-  //}
+  public Command getAutonomousCommand() {
+    return null;
+  }
+  
 }

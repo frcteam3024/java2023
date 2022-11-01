@@ -5,47 +5,117 @@
 
 package frc.robot.subsystems;
 
-import java.security.InvalidParameterException;
+import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.commands.SwerveDrive;
+import static frc.robot.Constants.DriveConstants.*;
 
+public class SwerveSubsystem extends SubsystemBase {
 
-public class DriveTrain extends SubsystemBase {
+  private final SwerveModule frontLeft = new SwerveModule(
+    FL_DRIVE_MOTOR_PORT,
+    FL_TURN_MOTOR_PORT,
+    FL_DRIVE_ENCODER_REVERSED,
+    FL_TURN_ENCODER_REVERSED,
+    FL_ABSOLUTE_ENCODER_PORT,
+    FL_ABSOLUTE_ENCODER_OFFSET_RAD,
+    FL_ABSOLUTE_ENCODER_REVERSED);
 
-  SwerveModule swerveFL = new SwerveModule("FL", Constants.FL_SWERVE_MODULE_ID);
-  SwerveModule swerveFR = new SwerveModule("FR", Constants.FR_SWERVE_MODULE_ID);
-  SwerveModule swerveBL = new SwerveModule("BL", Constants.BL_SWERVE_MODULE_ID);
-  SwerveModule swerveBR = new SwerveModule("BR", Constants.BR_SWERVE_MODULE_ID);
+  private final SwerveModule frontRight = new SwerveModule(
+    FR_DRIVE_MOTOR_PORT,
+    FR_TURN_MOTOR_PORT,
+    FR_DRIVE_ENCODER_REVERSED,
+    FR_TURN_ENCODER_REVERSED,
+    FR_ABSOLUTE_ENCODER_PORT,
+    FR_ABSOLUTE_ENCODER_OFFSET_RAD,
+    FR_ABSOLUTE_ENCODER_REVERSED);
 
-  private SwerveModule[] swerveModules = {
-    swerveFL,
-    swerveFR,
-    swerveBL,
-    swerveBR
+  private final SwerveModule backLeft = new SwerveModule(
+    BL_DRIVE_MOTOR_PORT,
+    BL_TURN_MOTOR_PORT,
+    BL_DRIVE_ENCODER_REVERSED,
+    BL_TURN_ENCODER_REVERSED,
+    BL_ABSOLUTE_ENCODER_PORT,
+    BL_ABSOLUTE_ENCODER_OFFSET_RAD,
+    BL_ABSOLUTE_ENCODER_REVERSED);
+
+  private final SwerveModule backRight = new SwerveModule(
+    BR_DRIVE_MOTOR_PORT,
+    BR_TURN_MOTOR_PORT,
+    BR_DRIVE_ENCODER_REVERSED,
+    BR_TURN_ENCODER_REVERSED,
+    BR_ABSOLUTE_ENCODER_PORT,
+    BR_ABSOLUTE_ENCODER_OFFSET_RAD,
+    BR_ABSOLUTE_ENCODER_REVERSED);
+
+  private final SwerveModule[] swerveModules = {
+    frontLeft,
+    frontRight,
+    backLeft,
+    backRight
   };
 
-  private PIDController pid = new PIDController(Constants.kP, Constants.kI, Constants.kD);
-  // docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  public DriveTrain() {
-    /** Creates a new DriveTrain. */
+  public SwerveSubsystem() {
+    // allow 1 sec for gyro to boot up. on a separate thread so other
+    // functions can continue to run
+    new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+        zeroHeading();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+        Thread.currentThread().interrupt();
+      }
+    }).start();
+  }
+
+  public void zeroHeading() {
+    gyro.reset();
+  }
+
+  public double getGyroDegrees() {
+    // range (-180, 180]
+    return Math.IEEEremainder(gyro.getAngle(), 360);
+  }
+
+  public Rotation2d getGyroRotation2d() {
+    return Rotation2d.fromDegrees(getGyroDegrees());
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Gyro Degrees", getGyroDegrees());
   }
 
-  //@Override
-  public void initDefaultCommand() {
-    setDefaultCommand(new SwerveDrive());
+  public void stopModules() {
+    for (SwerveModule module : swerveModules)
+      module.stop();
   }
 
-  // TODO: implement shortest path angles and flipping wheels once current code runs successfully
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_PHYSICAL_SPEED_METERS_PER_SEC);
+    for (int i=0; i<4; i++)
+      swerveModules[i].setState(desiredStates[i]);
+  }
+
+  public void brakeMode() {
+    for (SwerveModule module : swerveModules)
+      module.brakeMode();
+  }
+
+  public void coastMode() {
+    for (SwerveModule module : swerveModules)
+      module.coastMode();
+  }
+
+  /**
 
   ///////////////////////////////
   // SPEED && ANGLE FUNCTIONS: //
@@ -197,7 +267,7 @@ public class DriveTrain extends SubsystemBase {
    *   }
    *   return shortestPathAngles;
    * }
-   */
+   *
 
    public double standardizeAngle(double angle) {
     return ((angle + 180.0) % 360.0) - 180.0;
@@ -237,7 +307,7 @@ public class DriveTrain extends SubsystemBase {
       if (flippedWheels[i]) {
         normalizedSpeeds[i] *= -1;
       }
-      */
+      *
     }
     return normalizedSpeeds;
   }
@@ -294,5 +364,6 @@ public class DriveTrain extends SubsystemBase {
     double[] fixedDriverInputs = {finalDriverXAxis, finalDriverYAxis};
     return fixedDriverInputs;
   }
+  */
 
 }

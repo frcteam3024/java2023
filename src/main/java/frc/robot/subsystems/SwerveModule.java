@@ -4,95 +4,121 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-import frc.robot.Robot;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import static java.lang.Math.PI;
+import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.ModuleConstants.*;
 
 /** Add your docs here. */
 public class SwerveModule {
 
-    private String location;              // FL,FR,BL,BR (for use in print labels)
-    private int index;                    // 0,1,2,3 (for use in for loops)
-    private boolean isFlipped;            // should speed be inverted?
-    private double swerveOffset;          // degrees offset from 0
+    private final CANSparkMax driveMotor;
+    private final TalonSRX turnMotor;
+    
+    private final RelativeEncoder driveEncoder;
+    // private final /** ? */ turnEncoder;
 
-    private CANSparkMax speedMotor;       // drive module
-    private TalonSRX angleMotor;          // motors and
-    private AnalogEncoder angleEncoder;   // angle encoder
+    private final PIDController turnPIDController;
 
-    public SwerveModule(String location, int index) {
-        this.setLocation(location);
-        this.setIndex(index);
-        this.setFlip(false);
-        this.setSwerveOffset(Constants.ENCODER_ZERO_OFFSETS[index]);
+    private final AnalogEncoder absoluteEncoder;
+    private final boolean absoluteEncoderReversed;
+    private final double absoluteEncoderOffsetRad;
 
-        speedMotor = new CANSparkMax(Constants.SPEED_MOTOR_IDS[index], CANSparkMaxLowLevel.MotorType.kBrushless);
-        angleMotor = new TalonSRX(Constants.ANGLE_MOTOR_IDS[index]);
-        angleEncoder = new AnalogEncoder(Constants.ENCODER_IDS[index]);
-    }
+    public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed,
+            int absoluteEncoderID, double absoluteEncoderOffsetRad, boolean absoluteEncoderReversed) {
 
-    public String getLocation() {
-      return location;
-    }
-    public void setLocation(String location) {
-      this.location = location;
-    }
+      this.absoluteEncoderOffsetRad = absoluteEncoderOffsetRad;
+      this.absoluteEncoderReversed = absoluteEncoderReversed;
+      absoluteEncoder = new AnalogEncoder(absoluteEncoderID);
 
-    public int getIndex() {
-      return index;
-    }
-    public void setIndex(int index) {
-      this.index = index;
-    }
+      driveMotor = new CANSparkMax(driveMotorID, CANSparkMaxLowLevel.MotorType.kBrushless);
+      turnMotor = new TalonSRX(turnMotorID);
+      
+      driveMotor.setInverted(driveMotorReversed);
+      turnMotor.setInverted(turnMotorReversed);
 
-    public boolean getFlip() {
-      return isFlipped;
-    }
-    public void setFlip(boolean isFlipped) {
-      this.isFlipped = isFlipped;
+      driveEncoder = driveMotor.getEncoder();
+      // turnEncoder = turnMotor.getSelectedSensorPosition(); //?
+
+      driveEncoder.setPositionConversionFactor(DRIVE_ENCODER_ROTATION_TO_METER);
+      driveEncoder.setVelocityConversionFactor(DRIVE_ENCODER_RPM_TO_METERS_PER_SEC);
+
+      turnPIDController = new PIDController(KP_TURN, KI_TURN, KD_TURN);
+      turnPIDController.enableContinuousInput(-PI, PI);
+    
+      resetEncoders();
     }
 
-    public double getSwerveOffset() {
-      return swerveOffset;
-    }
-    public void setSwerveOffset(double swerveOffset) {
-      this.swerveOffset = swerveOffset;
+    public double getDrivePosition() {
+      return driveEncoder.getPosition();
     }
 
-    public double getAngleEncoder() {
-        double rawEncoder = angleEncoder.getAbsolutePosition();
-        double degEncoder = rawEncoder * 360.0;
-        double zeroedEncoder = degEncoder - this.swerveOffset;
-        return Robot.driveTrain.standardizeAngle(zeroedEncoder);
+    public double getTurnPosition() {
+      return turnMotor.getSelectedSensorPosition();
+    }
+
+    public double getDriveVelocity() {
+      return driveEncoder.getVelocity();
+    }
+
+    public double getTurnVelocity() {
+      return turnMotor.getSelectedSensorVelocity();
+    }
+
+    public double getAbsoluteEncoderRad() {
+      double angle = absoluteEncoder.getAbsolutePosition();
+      angle *= PI;
+      angle -= absoluteEncoderOffsetRad;
+      angle += (angle < -PI ? 2*PI : 0);
+      angle *= (absoluteEncoderReversed ? -1.0 : 1.0);
+      return angle;
+    }
+
+    public void resetEncoders() {
+      driveEncoder.setPosition(0);
+      // turnEncoder.setPosition(getAbsoluteEncoderRad());
+    }
+    
+    public SwerveModuleState getState() {
+      return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
+    }
+
+    public void setState(SwerveModuleState state) {
+      if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+        stop();
+        return;
+      }
+      state = SwerveModuleState.optimize(state, getState().angle);
+      driveMotor.set(state.speedMetersPerSecond / MAX_PHYSICAL_SPEED_METERS_PER_SEC);
+      turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+      SmartDashboard.putString("Swerve["+absoluteEncoder.getChannel()+"] state", state.toString());
+    }
+
+    public void stop() {
+      driveMotor.set(0);
+      turnMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void brakeMode() {
-      speedMotor.setIdleMode(IdleMode.kBrake);
-      angleMotor.setNeutralMode(NeutralMode.Brake);
+      driveMotor.setIdleMode(IdleMode.kBrake);
+      turnMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void coastMode() {
-      speedMotor.setIdleMode(IdleMode.kCoast);
-      angleMotor.setNeutralMode(NeutralMode.Coast);
+      driveMotor.setIdleMode(IdleMode.kCoast);
+      turnMotor.setNeutralMode(NeutralMode.Coast);
     }
 
-    public void setAngleMotorOutput(double output) {
-      angleMotor.set(ControlMode.PercentOutput, output);
-    }
-
-    public void setSpeedMotorOutput(double output) {
-      speedMotor.set(output);
-    }
-
-    public void resetOffsets() {
-      angleEncoder.reset();
-    }
 }
