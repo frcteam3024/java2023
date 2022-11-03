@@ -1,20 +1,25 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+/** FILE DESCRIPTION: 
+ *  The Constants file is used to define any important numbers so that they can 
+ *  easily be found and changed in one central location. Constants is split up
+ *  into various classes to further organize these numbers. When in doubt, a
+ *  number should be defined in Constants over being used without context in
+ *  another file.
  */
+
 public final class Constants {
 
   private Constants() {}
 
-  // Place all "magic numbers" here
+  public static final class DriveConstants {
+    private DriveConstants() {}
 
-  public static final int MOTOR_LEFT_1_ID = 0;
+    // To keep code organized, define only constants related to the drive train here.
+    public static final int MOTOR_LEFT_1_ID = 0;
+    // [TODO] add other drive train constants here
+  }
+
+  // [TODO] create a class OIConstants to define numbers related to controller inputs
 
 }
