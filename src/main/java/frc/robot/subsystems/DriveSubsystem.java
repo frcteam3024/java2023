@@ -16,7 +16,7 @@ import frc.robot.Constants.DriveConstants;
 public class DriveSubsystem extends SubsystemBase {
   
   private final TalonSRX motorLeft1 = new TalonSRX(DriveConstants.MOTOR_LEFT_1_ID);
-  /** [TODO] declare motorLeft2, motorRight1, and motorRight2 in similar fashion.
+  /** [TODO #1] declare motorLeft2, motorRight1, and motorRight2 in similar fashion.
    * 
    *  Each motor is a new instance of a class "TalonSRX" (the motorcontrollers we
    *  use). They take the ID of each motor as an input. Instead of passing the number
@@ -33,18 +33,18 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void brakeMode() {
     motorLeft1.setNeutralMode(NeutralMode.Brake);
-    // [TODO] set remaining motors to brake mode
+    // [TODO #2] set remaining motors to brake mode
   }
 
   public void coastMode() {
-    // [TODO] set all motors to coast mode
+    // [TODO #3] set all motors to coast mode
   }
 
   public void setLeftMotorOutputs(double speed) {
-    // [TODO] set left motor outputs to "speed" using .set()
-    // hint: use .set() like you used .setNeutralMode above
+    // [TODO #4] set left motor outputs to "speed" using .set()
+    // hint: use .set() like you used .setNeutralMode() above
   }
 
-  // [TODO] create a method to set right motor outputs to an inputted "speed"
+  // [TODO #5] create a method to set right motor outputs to an inputted "speed"
 
 }

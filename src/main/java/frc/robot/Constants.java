@@ -17,9 +17,9 @@ public final class Constants {
 
     // To keep code organized, define only constants related to the drive train here.
     public static final int MOTOR_LEFT_1_ID = 0;
-    // [TODO] add other drive train constants here
+    // [TODO #1] add other drive train constants here
   }
 
-  // [TODO] create a class OIConstants to define numbers related to controller inputs
+  // [TODO #8] create a class OIConstants to define numbers related to controller inputs
 
 }
