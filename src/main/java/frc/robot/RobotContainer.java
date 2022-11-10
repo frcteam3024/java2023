@@ -33,7 +33,11 @@ public class RobotContainer {
   public RobotContainer() {
   
     driveSubsystem.setDefaultCommand(new TankDriveCommand(
-        /** [TODO #9] give the driveSubsystem as an argument to the new command
+        /** TankDriveCommand isn't defined quite yet, but we'll need to give it
+         *  our instance of DriveSubsystem and two supplier functions to
+         *  give the values of the joystick axes.
+         * 
+         *  [TODO #9] give driveSubsystem as the first argument
          *  (followed by a comma to separate it from the next arguments)
          */
 
