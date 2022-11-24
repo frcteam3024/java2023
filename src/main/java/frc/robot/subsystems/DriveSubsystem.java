@@ -9,17 +9,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.DriveConstants.*;
 
-public class DriveTrain extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
   
-  private TalonSRX motorLeft1 = new TalonSRX(Constants.MOTOR_LEFT_1_ID);
-  private TalonSRX motorLeft2 = new TalonSRX(Constants.MOTOR_LEFT_2_ID);
-  private TalonSRX motorRight1 = new TalonSRX(Constants.MOTOR_RIGHT_1_ID);
-  private TalonSRX motorRight2 = new TalonSRX(Constants.MOTOR_RIGHT_2_ID);
+  private TalonSRX motorLeft1 = new TalonSRX(MOTOR_LEFT_1_ID);
+  private TalonSRX motorLeft2 = new TalonSRX(MOTOR_LEFT_2_ID);
+  private TalonSRX motorRight1 = new TalonSRX(MOTOR_RIGHT_1_ID);
+  private TalonSRX motorRight2 = new TalonSRX(MOTOR_RIGHT_2_ID);
 
   /** Creates a new DriveTrain. */
-  public DriveTrain() { /* TODO document why this constructor is empty */ }
+  public DriveSubsystem() { /* TODO document why this constructor is empty */ }
 
   @Override
   public void periodic() {
