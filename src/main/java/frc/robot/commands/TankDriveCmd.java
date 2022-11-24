@@ -1,12 +1,15 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.DriveSubsystem;
+import static frc.robot.Constants.DriveConstants.MIN_MOTOR_OUTPUT;
+import static java.lang.Math.abs;
+
 import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class TankDriveCmd extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private DriveSubsystem driveTrain;
   private Supplier<Double> leftAxisFunction;
@@ -31,8 +34,8 @@ public class TankDriveCmd extends CommandBase {
     double leftMotorOutputs = driverLeftAxis;
     double rightMotorOutputs = -driverRightAxis;
 
-    leftMotorOutputs = Math.abs(leftMotorOutputs) < 0.05 ? 0 : leftMotorOutputs;
-    rightMotorOutputs = Math.abs(rightMotorOutputs) < 0.05 ? 0 : rightMotorOutputs;
+    if (abs(leftMotorOutputs)  < MIN_MOTOR_OUTPUT) leftMotorOutputs  = 0;
+    if (abs(rightMotorOutputs) < MIN_MOTOR_OUTPUT) rightMotorOutputs = 0;
     
     SmartDashboard.putNumber("leftOut", leftMotorOutputs);
     SmartDashboard.putNumber("rightOut", rightMotorOutputs);
