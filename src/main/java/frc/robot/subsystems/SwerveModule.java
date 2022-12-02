@@ -18,7 +18,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static java.lang.Math.PI;
-import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ModuleConstants.*;
 
 /** Add your docs here. */
@@ -37,7 +36,7 @@ public class SwerveModule {
     private final double absoluteEncoderOffsetRad;
 
     public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorReversed, boolean turnMotorReversed,
-            int absoluteEncoderID, double absoluteEncoderOffsetRad, boolean absoluteEncoderReversed) {
+        int absoluteEncoderID, double absoluteEncoderOffsetRad, boolean absoluteEncoderReversed) {
 
       this.absoluteEncoderOffsetRad = absoluteEncoderOffsetRad;
       this.absoluteEncoderReversed = absoluteEncoderReversed;
@@ -101,8 +100,9 @@ public class SwerveModule {
         return;
       }
       state = SwerveModuleState.optimize(state, getState().angle);
-      driveMotor.set(state.speedMetersPerSecond / MAX_PHYSICAL_SPEED_METERS_PER_SEC);
-      turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+      // driveMotor.set(state.speedMetersPerSecond / MAX_PHYSICAL_SPEED_METERS_PER_SEC);
+      // turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+      SmartDashboard.putNumber("angle encoder ["+absoluteEncoder.getChannel()+"]", getTurnPosition());
       SmartDashboard.putString("Swerve["+absoluteEncoder.getChannel()+"] state", state.toString());
     }
 

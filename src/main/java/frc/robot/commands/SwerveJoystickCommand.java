@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 import static frc.robot.Constants.DriveConstants.*;
@@ -52,10 +53,12 @@ public class SwerveJoystickCommand extends CommandBase {
     double ySpeed = fixedMagnitude * sin(direction);
     double turnSpeed = turnSpeedFunction.get();
 
+    SmartDashboard.putNumber("turnSpeed1", turnSpeed);
     // apply deadband
-    xSpeed = Math.abs(xSpeed) > DEADBAND ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > DEADBAND ? ySpeed : 0.0;
-    turnSpeed = Math.abs(turnSpeed) > DEADBAND ? turnSpeed : 0.0;
+    xSpeed = Math.abs(xSpeed) > AXIS_DEADBAND ? xSpeed : 0.0;
+    ySpeed = Math.abs(ySpeed) > AXIS_DEADBAND ? ySpeed : 0.0;
+    turnSpeed = Math.abs(turnSpeed) > TURN_DEADBAND ? turnSpeed : 0.0;
+    SmartDashboard.putNumber("turnSpeed2", turnSpeed);
 
     // make driving smoother with rate limiting
     xSpeed = xLimiter.calculate(xSpeed);
@@ -74,13 +77,17 @@ public class SwerveJoystickCommand extends CommandBase {
       ? ChassisSpeeds.fromFieldRelativeSpeeds(
           xSpeed, ySpeed, turnSpeed, swerveSubsystem.getGyroRotation2d())
       // relative to robot
-      : new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
+      : new ChassisSpeeds(ySpeed, xSpeed, turnSpeed);
 
     // convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates = DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-
+    SmartDashboard.putString("chassisSpeeds", chassisSpeeds.toString());
     // output module states to each wheel
     swerveSubsystem.setModuleStates(moduleStates);
+    for (int i=0; i<4; i++) {
+      SmartDashboard.putNumber("swerve ["+i+"] speed", moduleStates[i].speedMetersPerSecond);
+      SmartDashboard.putNumber("swerve ["+i+"] angle", moduleStates[i].angle.getDegrees());
+    }
   }
   
   @Override

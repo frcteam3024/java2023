@@ -77,8 +77,8 @@ public final class Constants {
   public static final class ModuleConstants {
     private ModuleConstants() {}
 
-    public static final double DRIVE_ENCODER_ROTATION_TO_METER     = 0;
-    public static final double DRIVE_ENCODER_RPM_TO_METERS_PER_SEC = 0;
+    public static final double DRIVE_ENCODER_ROTATION_TO_METER     = 3.35;
+    public static final double DRIVE_ENCODER_RPM_TO_METERS_PER_SEC = 201.34;
     public static final double KP_TURN                             = 0.15;
     public static final double KI_TURN                             = 0;
     public static final double KD_TURN                             = 0;
@@ -88,9 +88,9 @@ public final class Constants {
     private DriveConstants() {}
 
     // distance between left and right wheels (meters)
-    public static final double  TRACK_WIDTH = 0;
+    public static final double TRACK_WIDTH = 20;
     // distance between front and back wheels (meters)
-    public static final double  WHEEL_BASE = 0;
+    public static final double WHEEL_BASE = 23.5;
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       // each argument is the location of a swerve module relative to the robot's center
       new Translation2d( WHEEL_BASE / 2, -TRACK_WIDTH / 2),
@@ -130,27 +130,27 @@ public final class Constants {
     public static final double  BR_ABSOLUTE_ENCODER_OFFSET_RAD  = -1.288;
     public static final boolean BR_ABSOLUTE_ENCODER_REVERSED    = false;
 
-    public static final double MAX_PHYSICAL_SPEED_METERS_PER_SEC          = 0;
-    public static final double TELE_DRIVE_MAX_SPEED_METERS_PER_SEC        = 0;
-    public static final double TELE_DRIVE_MAX_ACCEL_UNITS_PER_SEC         = 0;
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCEL_UNITS_PER_SEC = 0;
-    public static final double TELE_DRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC   = 0;
-
+    public static final double MAX_PHYSICAL_SPEED_METERS_PER_SEC          = .2;           // ? 
+    public static final double TELE_DRIVE_MAX_SPEED_METERS_PER_SEC        = .2;           // ? 
+    public static final double TELE_DRIVE_MAX_ACCEL_UNITS_PER_SEC         = 1;          // ? 
+    public static final double TELE_DRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC   = 2 * Math.PI; // ?  
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCEL_UNITS_PER_SEC = 2 * Math.PI; // ? 
   }
   
   public static final class IntakeConstants {
     private IntakeConstants() {}
 
     public static final int INTAKE_MOTOR_ID = 8;
-    public static final double MAX_INTAKE_SPEED = 0;
+    public static final double MAX_INTAKE_SPEED = 1;
   }
   public static final class OIConstants {
     OIConstants() {}
 
-    public static final double DEADBAND               = 0;
+    public static final double AXIS_DEADBAND          = 0.05;
+    public static final double TURN_DEADBAND          = 0.20;
 
     public static final int DRIVE_JOYSTICK_PORT       = 0;
-    public static final int COPILOT_JOYSTICK_PORT     = 1;
+    public static final int COPILOT_JOYSTICK_PORT     = 2;
               
     public static final int DRIVE_X_AXIS              = 0;
     public static final int DRIVE_Y_AXIS              = 1;
@@ -161,27 +161,25 @@ public final class Constants {
     public static final int COPILOT_Y_AXIS_LEFT       = 1;
     public static final int COPILOT_X_AXIS_RIGHT      = 2;
     public static final int COPILOT_Y_AXIS_RIGHT      = 3;
-    public static final int COPILOT_X                 = 0;
-    public static final int COPILOT_A                 = 1;
-    public static final int COPILOT_B                 = 2;
-    public static final int COPILOT_Y                 = 3;
-    public static final int COPILOT_LB                = 4;
-    public static final int COPILOT_LT                = 6;
-    public static final int COPILOT_RT                = 7;
-    public static final int COPILOT_START             = 9;
-    public static final int COPILOT_LEFT_STICK_PRESS  = 10;
-    public static final int COPILOT_RIGHT_STICK_PRESS = 11;
 
-    public static final int FIELD_ORIENTED_TOGGLE_BUTTON = 0;
-    public static final int RESET_GYRO_BUTTON = 0;
-    public static final int SPIN_INTAKE_BUTTON = 0;
+    public static final int COPILOT_X                 = 1;
+    public static final int COPILOT_A                 = 2;
+    public static final int COPILOT_B                 = 3;
+    public static final int COPILOT_Y                 = 4;
+    public static final int COPILOT_LB                = 5;
+    public static final int COPILOT_RB                = 6;
+    public static final int COPILOT_LT                = 7;
+    public static final int COPILOT_RT                = 8;
+    public static final int COPILOT_BACK              = 9;
+    public static final int COPILOT_START             = 10;
+    public static final int COPILOT_LEFT_STICK_PRESS  = 11;
+    public static final int COPILOT_RIGHT_STICK_PRESS = 12;
+
+    public static final int FIELD_ORIENTED_TOGGLE_BUTTON = COPILOT_A;
+    public static final int RESET_GYRO_BUTTON = COPILOT_B;
+    public static final int SPIN_INTAKE_BUTTON = COPILOT_X;
 
   }
 
-  /**
-   * BROKEN:
-   * public static final int COPILOT_RB               = 5;
-   * public static final int COPILOT_BACK             = 8;
-   */
 
 }

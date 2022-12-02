@@ -23,8 +23,6 @@ import static frc.robot.Constants.OIConstants.*;
  */
 public class RobotContainer {
 
-  private static final int SPIN_INTAKE_BUTTON = 0;
-  private static final int RESET_GYRO_BUTTON = 0;
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
@@ -35,11 +33,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
-        swerveSubsystem,
-        driverController::getMagnitude,
-        driverController::getDirectionRadians,
-        driverController::getTwist,
-        () -> !driverController.getRawButton(FIELD_ORIENTED_TOGGLE_BUTTON)));
+      swerveSubsystem,
+      driverController::getMagnitude,
+      driverController::getDirectionRadians,
+      driverController::getTwist,
+      () -> !driverController.getRawButton(FIELD_ORIENTED_TOGGLE_BUTTON)));
     configureButtonBindings();
   }
 
@@ -51,9 +49,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(driverController, RESET_GYRO_BUTTON)
-        .whenPressed(swerveSubsystem::zeroHeading);
+      .whenPressed(swerveSubsystem::zeroHeading);
     new JoystickButton(copilotController, SPIN_INTAKE_BUTTON)
-        .whileHeld(new SpinIntakeCommand(intakeSubsystem));
+      .whileHeld(new SpinIntakeCommand(intakeSubsystem));
     
   }
 
