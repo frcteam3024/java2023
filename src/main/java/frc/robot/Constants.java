@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+
+import static java.lang.Math.PI;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -77,8 +80,10 @@ public final class Constants {
   public static final class ModuleConstants {
     private ModuleConstants() {}
 
-    public static final double DRIVE_ENCODER_ROTATION_TO_METER     = 3.35;
-    public static final double DRIVE_ENCODER_RPM_TO_METERS_PER_SEC = 201.34;
+    public static final double WHEEL_DIAMETER                      = .105;
+    public static final double DRIVE_MOTOR_GEAR_RATIO              = 1.0/4.0;    // ?? Davis' guess
+    public static final double DRIVE_ENCODER_ROTATION_TO_METER     = DRIVE_MOTOR_GEAR_RATIO * PI * WHEEL_DIAMETER;
+    public static final double DRIVE_ENCODER_RPM_TO_METERS_PER_SEC = DRIVE_ENCODER_ROTATION_TO_METER / 60.0;
     public static final double KP_TURN                             = 0.15;
     public static final double KI_TURN                             = 0;
     public static final double KD_TURN                             = 0;
@@ -88,15 +93,16 @@ public final class Constants {
     private DriveConstants() {}
 
     // distance between left and right wheels (meters)
-    public static final double TRACK_WIDTH = 20;
+    public static final double TRACK_WIDTH = Units.inchesToMeters(20);
     // distance between front and back wheels (meters)
-    public static final double WHEEL_BASE = 23.5;
+    public static final double WHEEL_BASE = Units.inchesToMeters(23.5);
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       // each argument is the location of a swerve module relative to the robot's center
       new Translation2d( WHEEL_BASE / 2, -TRACK_WIDTH / 2),
       new Translation2d( WHEEL_BASE / 2,  TRACK_WIDTH / 2),
       new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2),
-      new Translation2d(-WHEEL_BASE / 2,  TRACK_WIDTH / 2));
+      new Translation2d(-WHEEL_BASE / 2,  TRACK_WIDTH / 2)
+    );
 
     public static final int     FL_DRIVE_MOTOR_PORT             = 14;
     public static final int     FL_TURN_MOTOR_PORT              = 7;
@@ -130,11 +136,11 @@ public final class Constants {
     public static final double  BR_ABSOLUTE_ENCODER_OFFSET_RAD  = -1.288;
     public static final boolean BR_ABSOLUTE_ENCODER_REVERSED    = false;
 
-    public static final double MAX_PHYSICAL_SPEED_METERS_PER_SEC          = .2;           // ? 
-    public static final double TELE_DRIVE_MAX_SPEED_METERS_PER_SEC        = .2;           // ? 
-    public static final double TELE_DRIVE_MAX_ACCEL_UNITS_PER_SEC         = 1;          // ? 
-    public static final double TELE_DRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC   = 2 * Math.PI; // ?  
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCEL_UNITS_PER_SEC = 2 * Math.PI; // ? 
+    public static final double MAX_PHYSICAL_SPEED_METERS_PER_SEC          = .2;            // ? 
+    public static final double TELE_DRIVE_MAX_SPEED_METERS_PER_SEC        = .2;            // ? 
+    //public static final double TELE_DRIVE_MAX_ACCEL_UNITS_PER_SEC         = 1;           // ? 
+    public static final double TELE_DRIVE_MAX_ANGULAR_SPEED_RAD_PER_SEC   = 2 * PI;        // ?  
+    //public static final double TELE_DRIVE_MAX_ANGULAR_ACCEL_UNITS_PER_SEC = 2 * Math.PI; // ? 
   }
   
   public static final class IntakeConstants {

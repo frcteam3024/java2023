@@ -95,15 +95,14 @@ public class SwerveModule {
     }
 
     public void setState(SwerveModuleState state) {
-      if (Math.abs(state.speedMetersPerSecond) < 0.001) {
-        stop();
-        return;
-      }
-      state = SwerveModuleState.optimize(state, getState().angle);
+      //if (Math.abs(state.speedMetersPerSecond) < 0.001) {
+      //  stop();
+      //  return;
+      //}
+      //state = SwerveModuleState.optimize(state, getState().angle);
       // driveMotor.set(state.speedMetersPerSecond / MAX_PHYSICAL_SPEED_METERS_PER_SEC);
       // turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
-      SmartDashboard.putNumber("angle encoder ["+absoluteEncoder.getChannel()+"]", getTurnPosition());
-      SmartDashboard.putString("Swerve["+absoluteEncoder.getChannel()+"] state", state.toString());
+      SmartDashboard.putString("swerve ["+absoluteEncoder.getChannel()+"] state", state.toString());
     }
 
     public void stop() {
