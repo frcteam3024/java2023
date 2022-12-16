@@ -4,7 +4,7 @@ import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ArcadeDriveCmd;
-// import frc.robot.commands.TankDriveCmd;
+import frc.robot.commands.TankDriveCmd;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class RobotContainer {
@@ -22,7 +22,7 @@ public class RobotContainer {
     // ));
 
     driveTrain.setDefaultCommand(
-      new ArcadeDriveCmd(
+      new TankDriveCmd(
         driveTrain,
         () -> -getCopilotRawAxis(DRIVER_Y_AXIS),
         () -> getCopilotRawAxis(DRIVER_X_AXIS)

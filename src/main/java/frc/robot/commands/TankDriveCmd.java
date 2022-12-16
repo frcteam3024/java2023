@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.MIN_MOTOR_OUTPUT;
+import static frc.robot.Constants.OIConstants.MIN_MOTOR_OUTPUT;
 import static java.lang.Math.abs;
 
 import java.util.function.Supplier;
@@ -34,8 +34,8 @@ public class TankDriveCmd extends CommandBase {
     double leftMotorOutputs = driverLeftAxis;
     double rightMotorOutputs = -driverRightAxis;
 
-    if (abs(leftMotorOutputs)  < MIN_MOTOR_OUTPUT) leftMotorOutputs  = 0;
-    if (abs(rightMotorOutputs) < MIN_MOTOR_OUTPUT) rightMotorOutputs = 0;
+    //if (abs(leftMotorOutputs)  < MIN_MOTOR_OUTPUT) leftMotorOutputs  = 0;
+    //if (abs(rightMotorOutputs) < MIN_MOTOR_OUTPUT) rightMotorOutputs = 0;
     
     SmartDashboard.putNumber("leftOut", leftMotorOutputs);
     SmartDashboard.putNumber("rightOut", rightMotorOutputs);
