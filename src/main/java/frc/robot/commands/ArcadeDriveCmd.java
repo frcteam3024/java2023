@@ -6,6 +6,7 @@ import static java.lang.Math.pow;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
@@ -46,8 +47,8 @@ public class ArcadeDriveCmd extends CommandBase {
     if (abs(leftMotorOutputs)  < 0.05) leftMotorOutputs  = 0;
     if (abs(rightMotorOutputs) < 0.05) rightMotorOutputs = 0;
     
-    // SmartDashboard.putNumber("leftOut", leftMotorOutputs);
-    // SmartDashboard.putNumber("rightOut", rightMotorOutputs);
+    SmartDashboard.putNumber("leftOut", leftMotorOutputs);
+    SmartDashboard.putNumber("rightOut", rightMotorOutputs);
     driveTrain.setLeftMotorOutputs(leftMotorOutputs);
     driveTrain.setRightMotorOutputs(rightMotorOutputs);
   }

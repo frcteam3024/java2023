@@ -6,10 +6,10 @@ public final class Constants {
   public static final class DriveConstants {
     private DriveConstants() {}
     
-    public static final int MOTOR_LEFT_1_ID = 0;
-    public static final int MOTOR_LEFT_2_ID = 6;
-    public static final int MOTOR_RIGHT_1_ID = 1;
-    public static final int MOTOR_RIGHT_2_ID = 4;
+    public static final int MOTOR_LEFT_1_ID  = 0;
+    public static final int MOTOR_LEFT_2_ID  = 6;
+    public static final int MOTOR_RIGHT_1_ID = 4;
+    public static final int MOTOR_RIGHT_2_ID = 1;
 
     public static final double MIN_MOTOR_OUTPUT = 0.05;
   }
